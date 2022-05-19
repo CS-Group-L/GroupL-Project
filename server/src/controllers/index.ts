@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import frontendRoutes from './TestController';
+import testRoutes from './TestController';
 const controllerRoutes = Router();
 
-controllerRoutes.use(frontendRoutes);
+controllerRoutes.use(testRoutes);
 
 export default controllerRoutes;
