@@ -3,23 +3,15 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon ./index.ts",
-    "build": "tsc -p .",
-    "dev-build": "node ./dist"
+    "start": "concurrently --kill-others \"npm run start --prefix client\"  \"npm run start --prefix server\"",
+    "build": "concurrently --kill-others \"npm run build --prefix client\"  \"npm run build --prefix server\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CS-Group-L/GroupL-Project.git"
   },
   "homepage": "https://github.com/CS-Group-L/GroupL-Project#readme",
-  "dependencies": {
-    "@types/express": "^4.17.13",
-    "@types/node": "^17.0.34",
-    "express": "^4.18.1"
-  },
   "devDependencies": {
-    "nodemon": "^2.0.16",
-    "ts-node": "^10.7.0",
-    "typescript": "^4.6.4"
+    "concurrently": "^7.2.0"
   }
 }
