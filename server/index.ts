@@ -8,6 +8,6 @@ const app = Express();
 
 app.use(controllerRoutes);
 
-app.listen(process.env.PORT, () => {
+app.listen(port, () => {
     console.log(`Server started on: http://localhost:${port}`);
 });
