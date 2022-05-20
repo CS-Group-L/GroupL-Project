@@ -14,7 +14,7 @@ AuthenticationController.post("/login", async (req: Request, res: Response) => {
         req.body.username,
         req.body.password
     ).catch((err: Error) => {
-        return res.status(err.name).
+        return res.status(parseInt(err.name)).send()
     });
     return res.send(loggedInUser);
 });
