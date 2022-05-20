@@ -1,0 +1,14 @@
+nav{
+    display: flex;
+    border-bottom: 1px solid black;
+}
+
+nav a{
+    text-decoration: none;
+    padding: 5px;
+    color: darkblue;
+}
+
+nav a:hover{
+    color: black;
+}
