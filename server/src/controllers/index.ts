@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import testRoutes from './TestController';
-import testRoutes1 from './test1';
-const controllerRoutes = Router();
+import AuthenticationController from './AuthenticationController';
+import ClusterController from './ClusterController';
+const ControllerRoutes = Router();
 
-controllerRoutes.use(testRoutes);
-controllerRoutes.use(testRoutes1);
+ControllerRoutes.use("/Cluster", ClusterController);
+ControllerRoutes.use("/Users", AuthenticationController);
 
-export default controllerRoutes;
+export default ControllerRoutes;
