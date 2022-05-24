@@ -3,8 +3,7 @@ import { DeleteUser, GetAllUsers, LoginUser, RegisterUser } from '../services/Au
 const AuthenticationController = Router();
 
 AuthenticationController.get("/", async (_, res: Response) => {
-    const users = await GetAllUsers()
-        .catch(() => res.sendStatus(500));
+    const users = await GetAllUsers();
 
     return res.send(users);
 });
@@ -13,9 +12,7 @@ AuthenticationController.post("/login", async (req: Request, res: Response) => {
     const loggedInUser = await LoginUser(
         req.body.username,
         req.body.password
-    ).catch((err: Error) => {
-        return res.status(parseInt(err.name)).send()
-    });
+    );
     return res.send(loggedInUser);
 });
 
@@ -23,8 +20,6 @@ AuthenticationController.post("/register", async (req: Request, res: Response) =
     const success = await RegisterUser(
         req.body.username,
         req.body.password
-    ).catch((err: Error) =>
-        res.sendStatus(parseInt(err.message))
     );
 
     if (success) {
@@ -36,8 +31,6 @@ AuthenticationController.post("/register", async (req: Request, res: Response) =
 AuthenticationController.delete("/:username", async (req: Request, res: Response) => {
     const success = await DeleteUser(
         req.params.username
-    ).catch((err: Error) =>
-        res.sendStatus(parseInt(err.message))
     );
 
     if (success) {
