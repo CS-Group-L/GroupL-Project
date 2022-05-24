@@ -46,8 +46,8 @@ AuthenticationController.delete("/:username", async (req: Request, res: Response
     return res.sendStatus(500);
 });
 
-AuthenticationController.get("/:id/Can/:permission", () => {
-
+AuthenticationController.get("/:username/has-dashboard-access",  async (req: Request, res: Response) => {
+    req.query.id
 });
 
 export default AuthenticationController;
