@@ -29,6 +29,7 @@ const CompilerPage = () => {
                 </div>
                 <div className='right'>
                 <header>Output</header>
+                <hr></hr>
                 </div>
             </div>
         </div>
