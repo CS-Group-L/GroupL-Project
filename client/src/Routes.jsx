@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, Routes as RouterRoutes} from 'react-router-dom';
 import Navbar from './components/Navbar';
 import CompilerPage from './views/CompilerPage';
+import Login from './views/Login';
 
 const Routes = () => {
   return (
@@ -9,6 +10,7 @@ const Routes = () => {
         <Navbar />
         <RouterRoutes>
             <Route element={<CompilerPage />} index />
+            <Route element={<Login/>} path="/login"/>
         </RouterRoutes>
       </>
   )
