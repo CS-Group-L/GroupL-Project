@@ -3,46 +3,119 @@
 }
 
 body {
-    background: #486BC7;
+    background-color:  #486BC7;
+}
+.container .wrapper {
+    padding: 80px 30px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(230px, 1fr));
 }
 
-.wrapper {
-    width: 350px;
-    background: #fff;
-    border-radius: 5px;
+.container .wrapper {
+    display: flex;
+}
+
+// left section
+.container .wrapper .left {
+    width: 30%;
+    padding-left: 100px;
+    background-color: #fff;
     padding: 30px;
     box-shadow: 7px 7px 12px rgba(0, 0, 0, 0.05);
     border-radius: 20px;
-    position: relative;
-    top: 150px;
-    left: 40px;
 }
 
-.wrapper header {
+.container .wrapper .left header{
     color: #486BC7;
     font-size: 27px;
     font-weight: 600;
     text-align: center;
+    padding-top: 20px;
 }
 
 .wrapper form {
     height: 167px;
     display: flex;
-    cursor: pointer;
     margin: 30px 0;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     border-radius: 5px;
-    border: 2px dashed #486BC7;
+    border: 2px dashed #6990F2;
 }
 
-#icon {
-    font-size: 50px;
+.errorMessageBox {
+    height: 40px;
+}
+
+#errorMessage {
+    color: red;
+    text-align: center;
+}
+
+// right section
+.container .wrapper .right {
+    width: 60%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    display: flex;
+    background-color: #fff;
+    position: relative;
+    left: 20px;
+    border-radius: 20px;
+}
+
+.container .wrapper .right header{
     color: #486BC7;
+    font-size: 27px;
+    font-weight: 600;
+    text-align: center;
+    position: relative;
+    bottom: 150px
 }
 
+// button
 .buttonExecute {
-    background-color: white;
-    width: 20px;
+    position: relative;
+    top: 80px;
+    left: 25%;
+    width: 200px;
+    height: 40px;
+    background-color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    color: #486BC7;
+    font-size: 20px;
 }
+
+.buttonExecute:hover {
+    background-color: rgb(238, 238, 238);
+}
+
+/*Responsive*/
+@media (max-width: 800px) {
+    .container .wrapper {
+        padding: 30px 30px;
+        display: grid;
+        grid-template-columns: repeat(1, minmax(230px, 1fr));
+        grid-gap: 20px;
+        text-align: center;
+    }
+
+    .container .wrapper .left {
+        width: 100%;
+        padding-left: 0;
+    }
+
+    .container .wrapper .right {
+        width: 100%;
+    }
+
+    .container .wrapper .right img {
+       padding-top: 40px;
+       padding-bottom: 20px;
+    }
+}
+
