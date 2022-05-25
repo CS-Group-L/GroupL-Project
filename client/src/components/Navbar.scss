@@ -1,14 +1,14 @@
 nav{
     display: flex;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #fff;
 }
 
 nav a{
     text-decoration: none;
     padding: 5px;
-    color: darkblue;
+    color: #fff;
 
     &:hover{
-        color: black;
+        color: rgb(179, 179, 179);
     }
 }
