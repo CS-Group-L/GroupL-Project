@@ -13,7 +13,6 @@ app.use(fileUpload({ useTempFiles: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(controllerRoutes);
-Execute();
 
 app.listen(port, () => {
     console.log(`Server started on: http://localhost:${port}`);
