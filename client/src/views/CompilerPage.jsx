@@ -7,11 +7,10 @@ const CompilerPage = () => {
 
         if (input.value.length == 0) {
             document.getElementById("errorMessage").style.display="block";
-            return false;
+            
         } else {
             document.getElementById("errorMessage").style.display="none";
-        }
-
+        } 
     }
 
     return (
@@ -29,7 +28,7 @@ const CompilerPage = () => {
                 </div>
                 <div className='right'>
                 <header>Output</header>
-                <hr></hr>
+                <h3 id='output' hidden>Your output will displayed here!</h3>
                 </div>
             </div>
         </div>
