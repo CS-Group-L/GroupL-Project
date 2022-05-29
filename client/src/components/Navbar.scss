@@ -1,14 +1,15 @@
-nav{
+nav {
     display: flex;
-    border-bottom: 1px solid #fff;
+    border-bottom: 2px solid white;
+    height: 3em;
 }
 
-nav a{
+nav a {
     text-decoration: none;
-    padding: 5px;
     color: #fff;
-
-    &:hover{
-        color: rgb(179, 179, 179);
+    font-weight: bold;
+    padding: 1%;
+    &:hover {
+        border-bottom: 5px solid #fff;
     }
 }

@@ -6,7 +6,7 @@ body {
     background-color:  #486BC7;
 }
 .container .wrapper {
-    padding: 80px 30px;
+    padding: 20px 30px;
     display: grid;
     grid-template-columns: repeat(2, minmax(230px, 1fr));
 }
@@ -17,12 +17,13 @@ body {
 
 // left section
 .container .wrapper .left {
-    width: 30%;
+    width: 100%;
     padding-left: 100px;
     background-color: #fff;
     padding: 30px;
     box-shadow: 7px 7px 12px rgba(0, 0, 0, 0.05);
     border-radius: 20px;
+    height: 60vh;
 }
 
 .container .wrapper .left header{
@@ -33,16 +34,16 @@ body {
     padding-top: 20px;
 }
 
-.wrapper form {
-    height: 167px;
-    display: flex;
-    margin: 30px 0;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    border-radius: 5px;
-    border: 2px dashed #6990F2;
-}
+// .wrapper form {
+//     height: 167px;
+//     display: flex;
+//     margin: 30px 0;
+//     align-items: center;
+//     justify-content: center;
+//     flex-direction: column;
+//     border-radius: 5px;
+//     border: 2px dashed #6990F2;
+// }
 
 .errorMessageBox {
     height: 40px;
@@ -55,14 +56,14 @@ body {
 
 // right section
 .container .wrapper .right {
-    width: 60%;
+    width: 65%;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     display: flex;
     background-color: #fff;
     position: relative;
-    left: 20px;
+    left: 15vh;
     border-radius: 20px;
 }
 
@@ -78,12 +79,11 @@ body {
 // button
 .buttonExecute {
     position: relative;
-    top: 80px;
-    left: 25%;
-    width: 200px;
-    height: 40px;
     background-color: #fff;
+    width: 100%;
+    height: 5ch;
     border: none;
+    margin: 5%;
     border-radius: 20px;
     cursor: pointer;
     color: #486BC7;

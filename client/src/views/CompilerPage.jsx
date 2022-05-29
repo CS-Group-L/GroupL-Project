@@ -69,8 +69,8 @@ const CompilerPage = () => {
                         <div ref={errorBoxRef} className='errorMessageBox'>
                             <p id='errorMessage' hidden>Error: You have to choose a .py file</p>
                         </div>
-                        <button type="submit" className='buttonExecute'>Execute</button>
                     </div>
+                    <button type="submit" className='buttonExecute'>Execute</button>
                 </form>
                 <div className='right'>
                     <header>Output</header>
