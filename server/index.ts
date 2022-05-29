@@ -10,10 +10,8 @@ config();
 const port = process.env.PORT ?? 3000;
 const app = Express();
 
-app.use(cors({
-    origin: "*"
-}));
-app.use(fileUpload({ useTempFiles: true }));
+app.use(cors({ origin: "*" }));
+app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp" }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(controllerRoutes);

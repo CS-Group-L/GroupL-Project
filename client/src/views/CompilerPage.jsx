@@ -1,9 +1,10 @@
 import './CompilerPage.scss';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 const CompilerPage = () => {
-    const [file, setFile] = useState(null);
+    const fileUploadBoxRef = useRef();
+    const errorBoxRef = useRef();
     const [output, setOutput] = useState();
 
     // useEffect(() => {
@@ -22,39 +23,36 @@ const CompilerPage = () => {
             });
     };
 
-    function uploadFile() {
-        const input = document.getElementById("chosenFile");
-        if (input?.files?.length == 0) {
-            document.getElementById("errorMessage").style.display = "block";
-        } else {
-            document.getElementById("errorMessage").style.display = "none";
-        }
-        setFile(input.files[0]);
-    }
-
-
+    const getFileToUpload = useCallback(() => {
+        const input = fileUploadBoxRef.current;
+        return input?.files?.length >= 1 ? input.files[0] : null;
+    }, [fileUploadBoxRef.current]);
 
     const handleSumbit = (e) => {
         e.preventDefault();
 
-        uploadFile(); //set/get the file
+        const errorBox = errorBoxRef.current;
+        const fileToUpload = getFileToUpload();
 
+        if (!fileToUpload) {
+            errorBox.style.display = "block";
+            return; //return to prevent errors
+        }
+
+        errorBox.style.display = "none";
         const formData = new FormData();
 
-        formData.append("file", file);
+        formData.append("file", fileToUpload);
 
-        axios
-            .post("http://localhost:3000/cluster/push", formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-            .then((res) => {
-                console.log(res);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        axios.post("http://localhost:3000/cluster/push", formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then((res) => {
+            console.log(res);
+        }).catch((err) => {
+            console.log(err);
+        });
 
         getOutput(); //gives the current/last output
     };
@@ -67,8 +65,8 @@ const CompilerPage = () => {
                 <form method="post" onSubmit={handleSumbit}>
                     <div className='left'>
                         <header>File uploader Python</header>
-                        <input type="file" id='chosenFile' name='filename' accept='.py' />
-                        <div className='errorMessageBox'>
+                        <input ref={fileUploadBoxRef} type="file" name='filename' accept='.py' />
+                        <div ref={errorBoxRef} className='errorMessageBox'>
                             <p id='errorMessage' hidden>Error: You have to choose a .py file</p>
                         </div>
                         <button type="submit" className='buttonExecute'>Execute</button>
