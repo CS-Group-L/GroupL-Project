@@ -69,8 +69,10 @@ const CompilerPage = () => {
                 </form>
                 <div className='output-container'>
                     <header>Output</header>
-                    {!output && <h3 ref={outputPlaceholderRef} style={{ display: "block" }}>Your output will displayed here!</h3>}
-                    <pre>{output}</pre>
+                    <div className="output-content">
+                        {!output && <h3 ref={outputPlaceholderRef} style={{ display: "block" }}>Your output will displayed here!</h3>}
+                        <pre>{output}</pre>
+                    </div>
                 </div>
             </div>
         </div>
