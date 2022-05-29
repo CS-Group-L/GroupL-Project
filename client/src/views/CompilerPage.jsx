@@ -40,11 +40,11 @@ const CompilerPage = () => {
     const handleSumbit = (e) => {
         e.preventDefault();
 
-        uploadFile();
+        uploadFile(); //set/get the file
 
         const formData = new FormData();
 
-        formData.append("key", file);
+        formData.append("file", file);
 
         axios
             .post("http://localhost:3000/cluster/push", formData, {
@@ -58,8 +58,8 @@ const CompilerPage = () => {
             .catch((err) => {
                 console.log(err);
             });
-            
-            getOutput();
+
+        getOutput(); //gives the current/last output
     }
 
 
@@ -67,16 +67,16 @@ const CompilerPage = () => {
     return (
         <div className='container'>
             <div className='wrapper'>
-                <div className='left'>
-                    <header>File uploader Python</header>
-                    <form>
-                        <input type="file" id='chosenFile' name='filename' accept='.py'></input>
-                    </form>
-                    <div className='errorMessageBox'>
-                        <p id='errorMessage' hidden>Error: You have to choose a .py file</p>
+                <form method="post" onSubmit={handleSumbit}>
+                    <div className='left'>
+                        <header>File uploader Python</header>
+                        <input type="file" id='chosenFile' name='filename' accept='.py'/>
+                        <div className='errorMessageBox'>
+                            <p id='errorMessage' hidden>Error: You have to choose a .py file</p>
+                        </div>
+                        <button type="submit" className='buttonExecute'>Execute</button>
                     </div>
-                    <button onClick={handleSumbit} className='buttonExecute'>Execute</button>
-                </div>
+                </form>
                 <div className='right'>
                     <header>Output</header>
                     <h3 id='output' hidden>Your output will displayed here!</h3>
