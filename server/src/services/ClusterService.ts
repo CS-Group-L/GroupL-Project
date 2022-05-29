@@ -15,17 +15,13 @@ export const Execute = async () => {
     currentConsoleOutput = [];
     const childProcess = spawn("python3.10", ["./data/main.py"], { cwd: cwd() });
 
-    //./data/main.py
     childProcess.stderr.on("data", (stream: Buffer) => {
         console.log(stream.toString());
     });
 
     childProcess.stdout.on("data", (stream: Buffer) => {
         currentConsoleOutput.push(stream.toString());
-        //consoleOutputCallback?.(stream.toString());
     });
-
-    console.log(childProcess.exitCode);
 };
 
 export const GetEstimatedRunTime = async (): Promise<Number> => {
