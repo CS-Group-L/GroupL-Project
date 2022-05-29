@@ -28,7 +28,7 @@ const UserPage = () => {
         <table>
         <tr>
             <th>User</th>
-            <th>Password</th>
+            {/* <th>Password</th> */}
             <th></th>
         </tr>
         <ItemSlot naam={"admin"} wachtwoord={"admin"} id={-1} />
@@ -47,7 +47,7 @@ const ItemSlot = ({naam, wachtwoord, id}) => {
     return (
         <tr id={id}>
             <td>{naam}</td>
-            <td>{wachtwoord}</td>
+            {/* <td>{wachtwoord}</td> */}
             <td><button onClick={()=>{deleteUsers(id)}}>X</button></td>
         </tr>
     )
