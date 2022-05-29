@@ -12,31 +12,6 @@ const Login = () => {
 
     const history = createBrowserHistory();
 
-    // const login = (username, password) => {
-    //     axios
-    //         .post("http://localhost:8080/login", { username, password })
-    //         .then((res) => {
-    //             if (res.data.error) {
-    //                 console.log(res.data);
-                    
-    //             } else {
-    //                 console.log(res.data);
-    
-    //                 localStorage.setItem('accessToken', JSON.stringify(res.data));
-    
-    //                 history.push("/")
-    //                 window.location.reload();
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             if(error){
-    //                 setLoginErrorMessage("Invalid credentials"); 
-    //                 return;
-    //             }
-    //         })
-    
-    // };
-
     const handleUsernameChange = (e) => {
         e.preventDefault();
 
