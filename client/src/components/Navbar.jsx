@@ -1,14 +1,15 @@
-import './Navbar.scss'
+import { NavLink } from "react-router-dom";
+import './Navbar.scss';
 
 const Navbar = () => {
     return (
         <nav>
             {/* <a href='/login'>Login</a> */}
-            <a href='/users'>List of users</a>
-            <a href='/'>Compiler</a>
-            <a href='/register'>Register a user</a>
+            <NavLink to='/'>Upload</NavLink>
+            <NavLink to='/users'>Users</NavLink>
+            <NavLink to='/register'>Register</NavLink>
         </nav>
     );
-}
+};
 
-export default Navbar
+export default Navbar;

@@ -5,11 +5,8 @@ import { useCallback, useRef, useState } from 'react';
 const CompilerPage = () => {
     const fileUploadBoxRef = useRef();
     const errorBoxRef = useRef();
+    const outputPlaceholderRef = useRef();
     const [output, setOutput] = useState();
-
-    // useEffect(() => {
-    //     getOutput();
-    // })
 
     const getOutput = () => {
         axios
@@ -30,6 +27,7 @@ const CompilerPage = () => {
 
     const handleSumbit = (e) => {
         e.preventDefault();
+        setOutput(null);
 
         const errorBox = errorBoxRef.current;
         const fileToUpload = getFileToUpload();
@@ -50,32 +48,29 @@ const CompilerPage = () => {
             }
         }).then((res) => {
             console.log(res);
+            setTimeout(() => getOutput(), 1000);
         }).catch((err) => {
             console.log(err);
         });
-
-        getOutput(); //gives the current/last output
     };
-
-
 
     return (
         <div className='container'>
-            <div className='wrapper'>
-                <form method="post" onSubmit={handleSumbit}>
-                    <div className='left'>
+            <div className='uploader-page-wrapper'>
+                <form className="uploader-actions" method="post" onSubmit={handleSumbit}>
+                    <div className="upload-action">
                         <header>File uploader Python</header>
                         <input ref={fileUploadBoxRef} type="file" name='filename' accept='.py' />
-                        <div ref={errorBoxRef} className='errorMessageBox'>
-                            <p id='errorMessage' hidden>Error: You have to choose a .py file</p>
+                        <div ref={errorBoxRef} style={{ display: "none" }} className='errorMessageBox'>
+                            <p id='errorMessage'>Error: You have to choose a .py file</p>
                         </div>
                     </div>
-                    <button type="submit" className='buttonExecute'>Execute</button>
+                    <button type="submit" className='btn-execute'>Execute</button>
                 </form>
-                <div className='right'>
+                <div className='output-container'>
                     <header>Output</header>
-                    <h3 id='output' hidden>Your output will displayed here!</h3>
-                    <p>{output}</p>
+                    {!output && <h3 ref={outputPlaceholderRef} style={{ display: "block" }}>Your output will displayed here!</h3>}
+                    <pre>{output}</pre>
                 </div>
             </div>
         </div>

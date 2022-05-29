@@ -1,56 +1,35 @@
-import './UserPage.scss'
 import { useState } from 'react';
+import { Link } from "react-router-dom";
+import './UserPage.scss';
 
 const UserPage = () => {
-    const [itemslots, SetItemSlots] = useState([]);
-    const [name, setUser] = useState([]);
-    const [password, setPassword] = useState([]);
-    const [count, setCount] = useState(0);
-
-    function addUsers()  {
-    SetItemSlots(itemslots.concat(<ItemSlot naam={name} wachtwoord={password} id={count}/>));
-        setCount(count+1);
-    }
+    const [users, _] = useState([{ name: "admin" }]);
 
     return (
-    <div className="container2">
-        <h1 id='title'>Add users</h1>
-        
-        <div className="add-elements">
-            <input id="add" onChange={e=>setUser(e.target.value)} type="text" placeholder="add user" /><input id="password" onChange={e=>setPassword(e.target.value)} type="text" placeholder="add password" />
-            <button id="btn" onClick={addUsers}>Add</button>
+        <div className="page-container">
+            <Link to="/register" className="btn btn-primary">Register a users</Link>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {users.map((user) => <ItemSlot {...user} />)}
+                </tbody>
+            </table>
         </div>
-        
-        <div className="element-list">
-            <ul id="list">
-            </ul>
-        </div>
-        <table>
-        <tr>
-            <th>User</th>
-            {/* <th>Password</th> */}
-            <th></th>
-        </tr>
-        <ItemSlot naam={"admin"} wachtwoord={"admin"} id={-1} />
-        {itemslots}
-        </table>
-    </div>
-    
     );
 };
 
-const ItemSlot = ({naam, wachtwoord, id}) => {
-    function deleteUsers (id) {
-        document.getElementById(id).remove();
-    }
-
+const ItemSlot = ({ name }) => {
     return (
-        <tr id={id}>
-            <td>{naam}</td>
-            {/* <td>{wachtwoord}</td> */}
-            <td><button onClick={()=>{deleteUsers(id)}}>X</button></td>
+        <tr>
+            <td>{name}</td>
+            <td><button>X</button></td>
         </tr>
-    )
-}
+    );
+};
 
 export default UserPage;
