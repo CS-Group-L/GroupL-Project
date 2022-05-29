@@ -1,4 +1,4 @@
-import './CompilerPage.scss'
+import './CompilerPage.scss';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
@@ -19,20 +19,17 @@ const CompilerPage = () => {
                 } else {
                     setOutput(res.data);
                 }
-            })
-    }
+            });
+    };
 
     function uploadFile() {
-        var input = document.getElementById("chosenFile");
-
-        if (input.value.length == 0) {
+        const input = document.getElementById("chosenFile");
+        if (input?.files?.length == 0) {
             document.getElementById("errorMessage").style.display = "block";
-
         } else {
             document.getElementById("errorMessage").style.display = "none";
         }
-
-        setFile(input);
+        setFile(input.files[0]);
     }
 
 
@@ -60,7 +57,7 @@ const CompilerPage = () => {
             });
 
         getOutput(); //gives the current/last output
-    }
+    };
 
 
 
@@ -70,7 +67,7 @@ const CompilerPage = () => {
                 <form method="post" onSubmit={handleSumbit}>
                     <div className='left'>
                         <header>File uploader Python</header>
-                        <input type="file" id='chosenFile' name='filename' accept='.py'/>
+                        <input type="file" id='chosenFile' name='filename' accept='.py' />
                         <div className='errorMessageBox'>
                             <p id='errorMessage' hidden>Error: You have to choose a .py file</p>
                         </div>
