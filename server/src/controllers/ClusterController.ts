@@ -7,9 +7,9 @@ const ClusterController = Router();
 
 ClusterController.post("/push", async (req: Request, res: Response) => {
     if (!req?.files?.file) return res.sendStatus(400);
-    
+
     const file = req.files.file as UploadedFile;
-    if (path.extname(file.name) !== "py") return res.sendStatus(400);
+    if (path.extname(file.name) !== ".py") return res.sendStatus(400);
 
     const uploaded = await PushToCluster(file.tempFilePath);
 
