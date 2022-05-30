@@ -2,15 +2,6 @@
     font-family: Arial, Helvetica, sans-serif
 }
 
-body {
-    background-color:  #486BC7;
-}
-.container .wrapper {
-    padding: 20px 30px;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(230px, 1fr));
-}
-
 .uploader-page-wrapper {
     display: flex;
     gap: 1rem;
@@ -28,16 +19,20 @@ body {
     text-align: center;
 }
 
+.output-container, .btn-execute, .upload-action {
+    background-color: #fff;
+}
+
 .output-container {
     flex: 1;
-
+    
+    display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    display: flex;
-    background-color: #fff;
-    position: relative;
 
+    padding: 1rem;
+    gap: 1rem;
     border-radius: 20px;
 
     & header {
@@ -45,13 +40,19 @@ body {
         font-size: 27px;
         font-weight: 600;
         text-align: center;
-    }    
+    }   
+    
+    & .output-content {
+        & > * {
+            margin: 0;
+        }
+    }
 }
+
 
 // button
 .btn-execute {
     position: relative;
-    background-color: #fff;
     width: 100%;
     height: 5ch;
     border: none;
@@ -87,27 +88,19 @@ body {
     gap: 1rem;
 
     border-radius: 20px;
-    padding: 1rem;
-    background: #fff;
+    padding-inline: 1rem;
+    padding-block: 2rem;
 }
 
 /*Responsive*/
-@media (max-width: 800px) {
-    .container .wrapper {
-        padding: 30px 30px;
-        display: grid;
-        grid-template-columns: repeat(1, minmax(230px, 1fr));
-        grid-gap: 20px;
-        text-align: center;
+@media (max-width: 900px) {
+    .uploader-page-wrapper {
+        flex-wrap: wrap;
+        gap: 4rem;
     }
 
-    .container .wrapper .right {
+    .uploader-actions {
         width: 100%;
-    }
-
-    .container .wrapper .right img {
-       padding-top: 40px;
-       padding-bottom: 20px;
     }
 }
 
