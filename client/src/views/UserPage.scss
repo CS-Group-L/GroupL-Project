@@ -23,25 +23,34 @@ li{
     margin: 12px 0;
 }
 
+.page-container {
+    position: relative;
+    top: 40px;
+}
+
 table {
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 100%;
 }
+
 table td, table th {
     border: 1px solid #ddd;
     padding: 8px;
 }
+
 table tr:nth-child(even){
-    background-color: #ddd;
+    background-color: #a6bfff;
 }
+
 table tr:nth-child(odd){
     background-color: white;
 }
+
 table th {
-padding-top: 12px;
-padding-bottom: 12px;
-text-align: left;
-background-color: rgba(0, 100, 255, 1);
-color: white;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #fff;
+    color: #486BC7;
 }
