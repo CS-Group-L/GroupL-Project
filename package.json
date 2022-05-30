@@ -14,5 +14,9 @@
   "homepage": "https://github.com/CS-Group-L/GroupL-Project#readme",
   "devDependencies": {
     "concurrently": "^7.2.0"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "react-router-dom": "^6.3.0"
   }
 }

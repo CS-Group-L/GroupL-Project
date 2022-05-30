@@ -1,0 +1,87 @@
+.login-container{
+    position: absolute;
+    /* border: 1px solid black; */
+    width: 33%;
+    margin-left: 31%;
+    margin-top: 5%;
+    background-color: white;
+    padding: 2%;
+    border-radius: 20px;
+}
+
+.login-container h1{
+    text-align: center;
+    font-style: italic;
+    color: #486BC7;
+    font-size: 36px;
+}
+
+.textbox {
+    width: 100%;
+    overflow: hidden;
+    font-size: 20px;
+    padding: 8px 0;
+    margin: 8px 0;
+    border-bottom: 1.5px solid darkblue;
+}
+
+.textbox input {
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 18px;
+    float: left;
+    width: 80%;
+    margin: 0 10px;
+    color: black;
+}
+
+.textbox input::placeholder {
+    color: gray;
+}
+
+.btn{
+    width: 100%;
+    background: none;
+    background-color: #486BC7;
+    border: none;
+    color: white;
+    padding: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 15px 0;
+    border-radius: 5px;
+    transition: 0.5s;
+}
+
+.btn:hover{
+    background-color: #0036bd;
+    transition: 0.5s;
+    color: white;
+}
+
+.btn-reg {
+    font-size: 22;
+    color: black;
+}
+
+.btn-reg a {
+    color: #486BC7;
+    text-decoration: none;
+    transition: 0.5s;
+}
+
+.btn-reg a:hover {
+    transition: 0.5s;
+    color: black;
+    text-decoration: underline;
+}
+
+.btn-reg p{
+    text-align: center;
+} 
+
+.error-msg{
+    color: red;
+
+}

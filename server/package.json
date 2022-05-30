@@ -5,6 +5,7 @@
     "build": "tsc -p ./"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/express-fileupload": "^1.2.2",
     "@types/node": "^17.0.34",
@@ -14,6 +15,7 @@
   },
   "dependencies": {
     "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-fileupload": "^1.4.0"
