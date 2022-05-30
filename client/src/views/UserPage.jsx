@@ -6,7 +6,7 @@ const UserPage = () => {
     const [users, _] = useState([{ name: "admin" }]);
 
     return (
-        <div className="page-container">
+        <div className="page-container user-page-container">
             <Link to="/register" className="btn btn-primary">Register a users</Link>
             <table>
                 <thead>
