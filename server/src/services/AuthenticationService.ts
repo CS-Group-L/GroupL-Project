@@ -1,19 +1,29 @@
 import { IUserWithoutPassword } from '../models/IUserModel';
 import * as bcrypt from "bcrypt";
+import fs from "fs/promises";
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+
+const usersDir = "./data/users";
+const usersFile = `${usersDir}/users.json`;
+if (!existsSync("./data")) mkdirSync("./data");
+if (!existsSync(usersDir)) mkdirSync(usersDir);
+if (!existsSync(usersFile)) writeFileSync(usersFile, "{}");
 
 interface IUserTable {
     [key: string]: string;
 }
 
 const getUserTable = async (): Promise<IUserTable> => {
-    return {
-        "user": "password"
-    };
+    const file = await fs.open(usersFile, "r");
+    const usersJSON = (await file.readFile()).toString();
+
+    return JSON.parse(usersJSON);
 };
 
-const saveUserTable = async (): Promise<boolean> => {
-
-    return false;
+const saveUserTable = async (users: IUserTable): Promise<void> => {
+    const file = await fs.open(usersFile, "w");
+    await file.writeFile(JSON.stringify(users));
+    await file.close();
 };
 
 export const GetAllUsers = async (): Promise<Array<IUserWithoutPassword>> => {
@@ -27,27 +37,29 @@ export const GetAllUsers = async (): Promise<Array<IUserWithoutPassword>> => {
     return usersArray;
 };
 
-export const RegisterUser = async (username: string, password: string, confPassword: string) => {
+export const RegisterUser = async (username: string, password: string, confPassword: string): Promise<boolean> => {
     if (password !== confPassword) {
         return false;
     }
 
-    const users = await getUserTable();
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
-    users[username] = hashedPassword;
+    try {
+        const users = await getUserTable();
+        const salt = await bcrypt.genSalt();
 
-    return users[username];
+        const hashedPassword = await bcrypt.hash(password, salt);
+        users[username] = hashedPassword;
+        await saveUserTable(users);
+        return true;
+    } catch (error) {
+        return false;
+    }
 };
 
 export const LoginUser = async (username: string, password: string) => {
     const users = await getUserTable();
-
     const hashedPassword = users[username];
 
-    const isUser = await bcrypt.compare(password, hashedPassword);
-
-    return isUser;
+    return await bcrypt.compare(password, hashedPassword);
 };
 
 export const DeleteUser = async (username: string) => {
@@ -55,8 +67,9 @@ export const DeleteUser = async (username: string) => {
 
     if (Object.keys(users).length > 1) {
         delete users[username];
+        await saveUserTable(users);
         return true;
     }
-    
+
     return false;
 };

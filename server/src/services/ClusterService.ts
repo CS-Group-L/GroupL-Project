@@ -4,10 +4,13 @@ import { spawn } from 'child_process';
 import { cwd } from 'process';
 import EventEmitter from 'events';
 
+const uploadsDir = "./data/uploads";
+
 if (!existsSync("./data")) mkdirSync("./data");
+if (!existsSync(uploadsDir)) mkdirSync(uploadsDir);
 
 export const PushToCluster = async (filePath: PathLike): Promise<boolean> => {
-    await moveFile(filePath, "./data/main.py");
+    await moveFile(filePath, `${uploadsDir}/main.py`);
     return true;
 };
 
@@ -16,7 +19,7 @@ export let ConsoleOutputLog: Array<string> = [];
 
 export const Execute = async () => {
     ConsoleOutputLog = [];
-    const childProcess = spawn("python3.10", ["./data/main.py"], { cwd: cwd() });
+    const childProcess = spawn("python3.10", [`${uploadsDir}/main.py`], { cwd: cwd() });
 
     childProcess.stderr.on("data", (stream: Buffer) => {
         console.log(stream.toString());
