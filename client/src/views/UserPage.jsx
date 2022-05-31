@@ -11,7 +11,7 @@ const UserPage = () => {
             <table>
                 <thead>
                     <tr>
-                        <th>User</th>
+                        <th>Users:</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -27,7 +27,7 @@ const ItemSlot = ({ name }) => {
     return (
         <tr>
             <td>{name}</td>
-            <td><button>X</button></td>
+            <td><button className='buttonRemove'>Remove user</button></td>
         </tr>
     );
 };

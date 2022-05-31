@@ -95,7 +95,7 @@
 /*Responsive*/
 @media (max-width: 900px) {
     .uploader-page-wrapper {
-        flex-wrap: wrap;
+        flex-direction: column;
         gap: 4rem;
     }
 

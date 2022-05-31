@@ -66,7 +66,7 @@ const CompilerPage = () => {
                         <header>File uploader Python</header>
                         <input ref={fileUploadBoxRef} type="file" name='filename' accept='.py' />
                         <div ref={errorBoxRef} style={{ display: "none" }} className='errorMessageBox'>
-                            <p id='errorMessage'>Error: You have to choose a .py file</p>
+                            <p id='errorMessage'>Error: Choose a .py file</p>
                         </div>
                     </div>
                     <button type="submit" className='btn-execute'>Execute</button>

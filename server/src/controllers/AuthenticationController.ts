@@ -19,7 +19,9 @@ AuthenticationController.post("/login", async (req: Request, res: Response) => {
 AuthenticationController.post("/register", async (req: Request, res: Response) => {
     const success = await RegisterUser(
         req.body.username,
-        req.body.password
+        req.body.password,
+        req.body.confPassword
+
     );
 
     if (success) {
