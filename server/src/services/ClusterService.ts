@@ -1,24 +1,34 @@
 import { existsSync, mkdirSync, PathLike } from 'fs';
 import { rename as moveFile } from "fs/promises";
-import { spawn } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 import { cwd } from 'process';
 import EventEmitter from 'events';
+import { IServiceResponse, SR } from '../models/ResponseModel';
 
 const uploadsDir = "./data/uploads";
 
 if (!existsSync("./data")) mkdirSync("./data");
 if (!existsSync(uploadsDir)) mkdirSync(uploadsDir);
 
-export const PushToCluster = async (filePath: PathLike): Promise<boolean> => {
-    await moveFile(filePath, `${uploadsDir}/main.py`);
-    return true;
+export const PushToCluster = async (filePath: PathLike): Promise<IServiceResponse<boolean | void>> => {
+    try {
+        await moveFile(filePath, `${uploadsDir}/main.py`);
+        return SR.data(true);
+    } catch (error) {
+        return SR.error(500, "Internal Server Error");
+    }
 };
 
 export const ConsoleOutput = new EventEmitter();
 export let ConsoleOutputLog: Array<string> = [];
+let currentProcess: ChildProcess = null;
 
-export const Execute = async () => {
+export const Execute = async (): Promise<IServiceResponse<boolean | void>> => {
     ConsoleOutputLog = [];
+    if (currentProcess && !currentProcess.kill()) {
+        return SR.error(500, "Server failed to stop previously running process");
+    }
+
     const childProcess = spawn("python3.10", [`${uploadsDir}/main.py`], { cwd: cwd() });
 
     childProcess.stderr.on("data", (stream: Buffer) => {
@@ -30,6 +40,8 @@ export const Execute = async () => {
         ConsoleOutputLog.push(outputString);
         ConsoleOutput.emit("data", outputString);
     });
+
+    return SR.data(true);
 };
 
 export const GetEstimatedRunTime = async (): Promise<Number> => {

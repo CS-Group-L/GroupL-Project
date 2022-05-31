@@ -1,48 +1,47 @@
 import { Request, Response, Router } from "express";
-import { DeleteUser, GetAllUsers, LoginUser, RegisterUser } from '../services/AuthenticationService';
+import { DeleteUser, GetAllUsers, LoginUser, RegisterUser, UserExists } from '../services/AuthenticationService';
+import { Send } from '../utils/Respond';
 const AuthenticationController = Router();
 
 AuthenticationController.get("/", async (_, res: Response) => {
-    const users = await GetAllUsers();
-
-    return res.send(users);
+    return Send(
+        res,
+        await GetAllUsers()
+    );
 });
 
 AuthenticationController.post("/login", async (req: Request, res: Response) => {
-    const loggedInUser = await LoginUser(
+    const response = await LoginUser(
         req.body.username,
         req.body.password
     );
-    return res.send(loggedInUser);
+
+    return Send(res, response);
 });
 
 AuthenticationController.post("/register", async (req: Request, res: Response) => {
-    const success = await RegisterUser(
+    const response = await RegisterUser(
         req.body.username,
         req.body.password,
         req.body.confPassword
-
     );
 
-    if (success) {
-        return res.sendStatus(200);
-    }
-    return res.sendStatus(500);
+    return Send(res, response);
 });
 
 AuthenticationController.delete("/:username", async (req: Request, res: Response) => {
-    const success = await DeleteUser(
+    const response = await DeleteUser(
         req.params.username
     );
 
-    if (success) {
-        return res.sendStatus(200);
-    }
-    return res.sendStatus(500);
+    return Send(res, response);
 });
 
-AuthenticationController.get("/:username/has-dashboard-access",  async (req: Request, res: Response) => {
-    req.query.id
+AuthenticationController.get("/:username/has-dashboard-access", async (req: Request, res: Response) => {
+    return Send(
+        res,
+        await UserExists(req.params.username)
+    );
 });
 
 export default AuthenticationController;
