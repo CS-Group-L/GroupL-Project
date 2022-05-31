@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from 'react-router-dom';
 import Routes from "./Routes";
 import "./res/index.scss";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const root = createRoot(
     document.getElementById("react-root")

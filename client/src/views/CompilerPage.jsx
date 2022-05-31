@@ -1,12 +1,14 @@
 import './CompilerPage.scss';
 import axios from 'axios';
 import { useCallback, useRef, useState } from 'react';
+import * as ReactBootStrap from 'react-bootstrap'
 
 const CompilerPage = () => {
     const fileUploadBoxRef = useRef();
     const errorBoxRef = useRef();
-    const outputPlaceholderRef = useRef();
+    // const outputPlaceholderRef = useRef();
     const [output, setOutput] = useState();
+    const [loading, setLoading] = useState(false);
 
     const getOutput = () => {
         axios
@@ -15,6 +17,7 @@ const CompilerPage = () => {
                 if (res.data.error) {
                     console.log(res.data);
                 } else {
+                    setLoading(false);
                     setOutput(res.data);
                 }
             });
@@ -48,6 +51,7 @@ const CompilerPage = () => {
             }
         }).then((res) => {
             console.log(res);
+            setLoading(true);
             setTimeout(() => getOutput(), 1000);
         }).catch((err) => {
             console.log(err);
@@ -70,8 +74,10 @@ const CompilerPage = () => {
                 <div className='output-container'>
                     <header>Output</header>
                     <div className="output-content">
-                        {!output && <h3 ref={outputPlaceholderRef} style={{ display: "block" }}>Your output will displayed here!</h3>}
-                        <pre>{output}</pre>
+                        {/* {!output && <h3 ref={outputPlaceholderRef} style={{ display: "block" }}>Your output will displayed here!</h3>} */}
+                        {!loading ? output : (
+                            <ReactBootStrap.Spinner animation="border" variant="primary" />
+                        )}
                     </div>
                 </div>
             </div>
