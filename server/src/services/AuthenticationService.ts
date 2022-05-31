@@ -1,4 +1,6 @@
 import { IUser } from '../models/IUserModel';
+import * as bcrypt from "bcrypt";
+
 
 const getUserTable = async (): Promise<any> => {
     return {
@@ -18,14 +20,34 @@ export const GetAllUsers = async (): Promise<Array<IUser>> => {
     return usersArray;
 };
 
-export const RegisterUser = async (username: String, password: String) => {
-    return false;
+export const RegisterUser = async (username: string, password: string, confPassword: string) => {
+    if (password !== confPassword) {
+        return false;
+    }
+
+    const users = await getUserTable();
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+    users[username] = hashedPassword;
+
+    return users[username];
 };
 
-export const LoginUser = async (username: String, password: String) => {
-    return false;
+export const LoginUser = async (username: string, password: string) => {
+    const users = await getUserTable();
+
+    const hashedPassword = users[username];
+    
+    const isUser = await bcrypt.compare(password, hashedPassword)
+
+    return isUser;
 };
 
-export const DeleteUser = async (username: String) => {
+export const DeleteUser = async (username: string) => {
+    const users = await getUserTable();
+    if(users.length > 0){
+        delete users[username];
+        return true;
+    }
     return false;
 };
