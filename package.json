@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "concurrently --kill-others \"npm run start --prefix client\"  \"npm run start --prefix server\"",
-    "install": "concurrently --kill-others \"cd ./client && npm i\"  \"cd ./server && npm i\"",
+    "install": "concurrently --kill-others \"npm i --prefix client\"  \"&& npm i --prefix server\"",
     "build": "concurrently --kill-others \"npm run build --prefix client\"  \"npm run build --prefix server\""
   },
   "repository": {

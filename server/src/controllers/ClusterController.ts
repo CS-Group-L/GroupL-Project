@@ -5,10 +5,13 @@ import path from 'path';
 import { Socket, Server as WsServer } from 'socket.io';
 import { Execute, PushToCluster, ConsoleOutput, ConsoleOutputLog } from '../services/ClusterService';
 import { Send } from '../utils/Respond';
+import { Server as wsServer } from "socket.io";
+import { corsOptions, server } from '../..';
 
-export default (io: WsServer) => {
+export default () => {
+
     const ClusterController = Router();
-    const ClusterIO = io.of("Cluster");
+    const ClusterIO = new wsServer(server, { cors: corsOptions, path: "/cluster" });
 
     ClusterController.post("/push", async (req: Request, res: Response) => {
         if (!req?.files?.file) return res.status(403).end("No file uploaded");
@@ -44,7 +47,7 @@ export default (io: WsServer) => {
         const OutputReceptionHandler = (output: string) => socket.emit("output", output);
         ConsoleOutput.on("data", OutputReceptionHandler);
 
-        socket.on("all-output", () => ConsoleOutputLog);
+        socket.on("all-output", (callback) => callback?.(ConsoleOutputLog));
 
         socket.on("disconnect", () => {
             ConsoleOutput.off("data", OutputReceptionHandler);

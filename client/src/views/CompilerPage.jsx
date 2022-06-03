@@ -1,7 +1,8 @@
 import './CompilerPage.scss';
 import axios from 'axios';
-import { useCallback, useRef, useState } from 'react';
 import * as ReactBootStrap from 'react-bootstrap'
+import { io } from "socket.io-client";
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const CompilerPage = () => {
     const fileUploadBoxRef = useRef();
@@ -9,19 +10,6 @@ const CompilerPage = () => {
     // const outputPlaceholderRef = useRef();
     const [output, setOutput] = useState();
     const [loading, setLoading] = useState(false);
-
-    const getOutput = () => {
-        axios
-            .get("http://localhost:3000/cluster/output")
-            .then((res) => {
-                if (res.data.error) {
-                    console.log(res.data);
-                } else {
-                    setLoading(false);
-                    setOutput(res.data);
-                }
-            });
-    };
 
     const getFileToUpload = useCallback(() => {
         const input = fileUploadBoxRef.current;
@@ -57,6 +45,27 @@ const CompilerPage = () => {
             console.log(err);
         });
     };
+
+    useEffect(() => {
+        const socket = io("ws://localhost:3000", {
+            path: "/cluster",
+            autoConnect: false,
+            transports: ["websocket"]
+        });
+
+        socket.on("connect", () => {
+            console.log("Connected");
+            socket.emit("all-output", (log) => {
+                
+            });
+        });
+
+
+        socket.connect();
+        return () => {
+            socket.close();
+        };
+    }, []);
 
     return (
         <div className='container'>

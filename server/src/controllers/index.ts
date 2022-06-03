@@ -4,10 +4,10 @@ import AuthenticationController from './AuthenticationController';
 import ClusterController from './ClusterController';
 
 
-export default (io: WsServer) => {
+export default () => {
     const ControllerRoutes = Router();
 
-    ControllerRoutes.use("/Cluster", ClusterController(io));
+    ControllerRoutes.use("/Cluster", ClusterController());
     ControllerRoutes.use("/Users", AuthenticationController);
 
     return ControllerRoutes;
