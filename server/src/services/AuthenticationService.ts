@@ -6,7 +6,6 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 
 const usersDir = "./data/users";
 const usersFile = `${usersDir}/users.json`;
-if (!existsSync("./data")) mkdirSync("./data");
 if (!existsSync(usersDir)) mkdirSync(usersDir);
 if (!existsSync(usersFile)) writeFileSync(usersFile, "{}");
 

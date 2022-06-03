@@ -5,6 +5,7 @@ import cors from "cors";
 import { config } from 'dotenv';
 import { createServer } from 'http';
 import controllerRoutes from './src/controllers';
+import { existsSync, mkdirSync } from 'fs';
 
 config();
 
@@ -19,6 +20,8 @@ app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp" }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(controllerRoutes());
+
+if (!existsSync("./data")) mkdirSync("./data");
 
 server.listen(port, () => {
     console.log(`Server started on: http://localhost:${port}`);
