@@ -43,13 +43,17 @@ export default () => {
     });
 
     ClusterIO.on("connection", (socket: Socket) => {
+        const OnFinishHandler = () => socket.emit("exit");
         const OutputReceptionHandler = (output: string) => socket.emit("output", output);
+
         ConsoleOutput.on("data", OutputReceptionHandler);
+        ConsoleOutput.on("exit", OnFinishHandler);
 
         socket.on("getrunningstatus", async (callback) => callback?.(await GetRunningStatus()));
         socket.on("getall", async (callback) => callback?.(ConsoleOutputLog));
 
         socket.on("disconnect", () => {
+            ConsoleOutput.off("exit", OnFinishHandler);
             ConsoleOutput.off("data", OutputReceptionHandler);
         });
     });

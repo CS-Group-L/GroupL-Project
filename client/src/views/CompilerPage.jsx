@@ -74,6 +74,7 @@ const CompilerPage = () => {
             });
         });
 
+        socket.on("exit", () => setLoading(false));
         socket.on("output", onOutputRecieved);
 
         socket.connect();

@@ -1,15 +1,18 @@
 import { existsSync, mkdirSync, PathLike } from 'fs';
 import { rename as moveFile } from "fs/promises";
-import { ChildProcess, spawn, exec } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 import { cwd } from 'process';
 import EventEmitter from 'events';
 import { IServiceResponse, SR } from '../models/ResponseModel';
 import { Stream } from 'stream';
+import { createReadStream } from 'fs';
 
 const uploadsDir = "./data/uploads";
+const logsDir = "./data/executelogs";
 
 if (!existsSync("./data")) mkdirSync("./data");
 if (!existsSync(uploadsDir)) mkdirSync(uploadsDir);
+if (!existsSync(logsDir)) mkdirSync(logsDir);
 
 export const PushToCluster = async (filePath: PathLike): Promise<IServiceResponse<boolean | void>> => {
     try {
@@ -23,6 +26,13 @@ export const PushToCluster = async (filePath: PathLike): Promise<IServiceRespons
 export const ConsoleOutput = new EventEmitter();
 export let ConsoleOutputLog: Array<string> = [];
 let currentProcess: ChildProcess = null;
+const consoleListener = new Stream.Writable({
+    write: (buffer: Buffer) => {
+        const outputString = buffer.toString();
+        ConsoleOutputLog.push(outputString);
+        ConsoleOutput.emit("data", outputString);
+    }
+});
 
 export const Execute = async (): Promise<IServiceResponse<boolean | void>> => {
     ConsoleOutputLog = [];
@@ -41,6 +51,15 @@ export const Execute = async (): Promise<IServiceResponse<boolean | void>> => {
         ConsoleOutputLog.push(outputString);
         ConsoleOutput.emit("data", outputString);
     });
+    // process.stdout.pipe(consoleListener);
+
+    childProcess.on(
+        "exit",
+        () => {
+            ConsoleOutput.emit("exit");
+            process.stdout.unpipe(consoleListener);
+        }
+    );
 
     return SR.data(true);
 };
