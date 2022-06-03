@@ -3,6 +3,8 @@ import { IServiceResponse, SR } from '../models/ResponseModel';
 import * as bcrypt from "bcrypt";
 import fs from "fs/promises";
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import * as jwt from 'jsonwebtoken';
+
 
 const usersDir = "./data/users";
 const usersFile = `${usersDir}/users.json`;
@@ -42,6 +44,15 @@ export const UserExists = async (username: string): Promise<IServiceResponse<boo
     return SR.data(user !== null && user !== undefined);
 };
 
+export const verifyToken = async (token: string):  Promise<any> => {
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
+            if (err) return reject(err);
+            resolve(data)
+        })
+    })
+}
+
 export const RegisterUser = async (username: string, password: string, confPassword: string): Promise<IServiceResponse<boolean | void>> => {
     if (password !== confPassword) return SR.error(403, "Password and confirmation password don't match");
 
@@ -61,7 +72,8 @@ export const RegisterUser = async (username: string, password: string, confPassw
     return SR.data(true);
 };
 
-export const LoginUser = async (username: string, password: string): Promise<IServiceResponse<boolean | void>> => {
+
+export const LoginUser = async (username: string, password: string, ): Promise<IServiceResponse<string | void>> => {
     const users = await getUserTable();
     const hashedPassword = users[username];
     if (!hashedPassword) return SR.error(403, "Username or Password was incorrect");
@@ -69,8 +81,9 @@ export const LoginUser = async (username: string, password: string): Promise<ISe
     if (!await bcrypt.compare(password, hashedPassword)) {
         return SR.error(403, "Username or Password was incorrect");
     };
-
-    return SR.data(true);
+    //const accessToken = jwtAuth(username).toString();
+    const accessToken = jwt.sign(username, process.env.ACCESS_TOKEN_SECRET);
+    return SR.data(accessToken);
 };
 
 export const DeleteUser = async (username: string): Promise<IServiceResponse<boolean | void>> => {
