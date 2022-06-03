@@ -1,15 +1,19 @@
 import './CompilerPage.scss';
 import axios from 'axios';
-import * as ReactBootStrap from 'react-bootstrap'
+import * as ReactBootStrap from 'react-bootstrap';
 import { io } from "socket.io-client";
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const CompilerPage = () => {
     const fileUploadBoxRef = useRef();
     const errorBoxRef = useRef();
-    // const outputPlaceholderRef = useRef();
-    const [output, setOutput] = useState();
+
+    const [output, setOutput] = useState([]);
+    const outputRef = useRef(output);
+
     const [loading, setLoading] = useState(false);
+    const loadingRef = useRef(loading);
+    loadingRef.current = loading;
 
     const getFileToUpload = useCallback(() => {
         const input = fileUploadBoxRef.current;
@@ -18,7 +22,7 @@ const CompilerPage = () => {
 
     const handleSumbit = (e) => {
         e.preventDefault();
-        setOutput(null);
+        setOutput([]);
 
         const errorBox = errorBoxRef.current;
         const fileToUpload = getFileToUpload();
@@ -38,33 +42,42 @@ const CompilerPage = () => {
                 'Content-Type': 'multipart/form-data'
             }
         }).then((res) => {
-            console.log(res);
             setLoading(true);
-            setTimeout(() => getOutput(), 1000);
-        }).catch((err) => {
-            console.log(err);
-        });
+        }).catch((err) => console.log(err));
     };
 
     useEffect(() => {
+        outputRef.current = output;
+    }, [output]);
+
+    useEffect(() => {
         const socket = io("ws://localhost:3000", {
-            path: "/cluster",
+            path: "/cluster/output",
             autoConnect: false,
             transports: ["websocket"]
         });
 
+        const onOutputRecieved = (log) => {
+            outputRef.current.push(log);
+            setOutput(outputRef.current);
+            if (loadingRef.current) setLoading(false);
+        };
+
         socket.on("connect", () => {
-            console.log("Connected");
-            socket.emit("all-output", (log) => {
-                
+            socket.emit("getrunningstatus", (isRunning) => {
+                console.log(isRunning);
+                if (isRunning) {
+                    setLoading(true);
+                    outputRef.current = [];
+                    socket.emit("getall", onOutputRecieved);
+                }
             });
         });
 
+        socket.on("output", onOutputRecieved);
 
         socket.connect();
-        return () => {
-            socket.close();
-        };
+        return () => socket.close();
     }, []);
 
     return (
@@ -82,15 +95,14 @@ const CompilerPage = () => {
                 </form>
                 <div className='output-container'>
                     <header>Output</header>
-                    <div className="output-content">
-                        {/* {!output && <h3 ref={outputPlaceholderRef} style={{ display: "block" }}>Your output will displayed here!</h3>} */}
-                        {!loading ? output : (
-                            <ReactBootStrap.Spinner animation="border" variant="primary" />
-                        )}
-                    </div>
+                    {!loading ?
+                        <div className="output-content"><pre>{output}</pre>
+                        </div> :
+                        (<div className="output-spinner-container"><ReactBootStrap.Spinner animation="border" variant="primary" /></div>)
+                    }
                 </div>
             </div>
-        </div>
+        </div >
 
     );
 };

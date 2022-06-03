@@ -1,9 +1,10 @@
 import { existsSync, mkdirSync, PathLike } from 'fs';
 import { rename as moveFile } from "fs/promises";
-import { ChildProcess, spawn } from 'child_process';
+import { ChildProcess, spawn, exec } from 'child_process';
 import { cwd } from 'process';
 import EventEmitter from 'events';
 import { IServiceResponse, SR } from '../models/ResponseModel';
+import { Stream } from 'stream';
 
 const uploadsDir = "./data/uploads";
 
@@ -42,6 +43,10 @@ export const Execute = async (): Promise<IServiceResponse<boolean | void>> => {
     });
 
     return SR.data(true);
+};
+
+export const GetRunningStatus = async (): Promise<boolean> => {
+    return (currentProcess || { exitCode: 1 }).exitCode !== null;
 };
 
 export const GetEstimatedRunTime = async (): Promise<Number> => {
