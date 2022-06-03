@@ -4,21 +4,21 @@
 }
 
 body {
-    background-color:  #486BC7;
+    background-color:  #486BC7 !important;
 }
 
 .page-container {
-    margin-inline: auto;
-    text-align: center;
-    font-family: 'Nunito',sans-serif;
+    margin-inline: auto !important;
+    text-align: center !important;
+    font-family: 'Nunito',sans-serif !important;
 }
 
 .btn {
-    display: block;
-    padding: 7px 14px;
-    background-color: #00b0ff;
-    border: none;
+    display: block !important;
+    padding: 7px 14px !important;
+    background-color: #00b0ff !important;
+    border: none !important;
     border-radius: 4px;
-    color: #fafafa;
-    cursor: pointer;
+    color: #fafafa !important;
+    cursor: pointer !important;
 }
