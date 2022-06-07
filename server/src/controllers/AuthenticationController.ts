@@ -4,7 +4,6 @@ import { deleteUserValidator, hasAccessValidator, loginValidator, registerValida
 import { Send } from '../utils/Respond';
 import authenticate from '../middleware/authenticate';
 
-
 const AuthenticationController = Router();
 
 AuthenticationController.get("/", authenticate, async (_, res: Response) => {
@@ -25,7 +24,7 @@ AuthenticationController.post("/login", loginValidator, async (req: Request, res
     return Send(res, response);
 });
 
-AuthenticationController.post("/register", registerValidator, async (req: Request, res: Response) => {
+AuthenticationController.post("/register", authenticate, registerValidator, async (req: Request, res: Response) => {
     const response = await RegisterUser(
         req.body.username,
         req.body.password,
@@ -35,7 +34,7 @@ AuthenticationController.post("/register", registerValidator, async (req: Reques
     return Send(res, response);
 });
 
-AuthenticationController.delete("/:username", deleteUserValidator, async (req: Request, res: Response) => {
+AuthenticationController.delete("/:username", authenticate, deleteUserValidator, async (req: Request, res: Response) => {
     const response = await DeleteUser(
         req.params.username
     );
@@ -43,7 +42,7 @@ AuthenticationController.delete("/:username", deleteUserValidator, async (req: R
     return Send(res, response);
 });
 
-AuthenticationController.get("/:username/has-dashboard-access", hasAccessValidator, async (req: Request, res: Response) => {
+AuthenticationController.get("/exists/:username", authenticate, hasAccessValidator, async (req: Request, res: Response) => {
     return Send(
         res,
         await UserExists(req.params.username)

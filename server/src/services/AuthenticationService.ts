@@ -12,21 +12,14 @@ const usersFile = `${usersDir}/users.json`;
 
 if (!existsSync("./data")) mkdirSync("./data");
 if (!existsSync(usersDir)) mkdirSync(usersDir);
-if (!existsSync(usersFile)) writeFileSync(usersFile, "{}");
+
+//Default login credentials:
+// Username = admin
+// Password = Password1.
+if (!existsSync(usersFile)) writeFileSync(usersFile, '{"admin":"$2b$10$SZj6mpCQYnVmc2dZow9bzuScUsmjkB1RvNSWBFP4FVnG2QQgQOh1S"}');
 
 interface IUserTable {
     [key: string]: string;
-}
-
-const generateRefreshToken = async (username: string) => {
-    const usersTable = await getUserTable();
-    const user = usersTable[username];
-
-    return jwt.sign({ user },
-        process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '1y' }
-    );
-
 }
 
 const generateAccessToken = async (username: string) => {
@@ -38,7 +31,7 @@ const generateAccessToken = async (username: string) => {
         { expiresIn: '1d' }
     );
 
-}
+};
 
 const getUserTable = async (): Promise<IUserTable> => {
     const file = await fs.open(usersFile, "r");
@@ -73,10 +66,10 @@ export const verifyAccessToken = async (token: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
             if (err) return reject(err);
-            resolve(data)
-        })
-    })
-}
+            resolve(data);
+        });
+    });
+};
 
 export const RegisterUser = async (username: string, password: string, confPassword: string): Promise<IServiceResponse<boolean | void>> => {
     if (password !== confPassword) return SR.error(403, "Password and confirmation password don't match");
@@ -109,12 +102,11 @@ export const LoginUser = async (username: string, password: string,): Promise<IS
     if (!await bcrypt.compare(password, hashedPassword)) {
         return SR.error(403, "Username or Password was incorrect");
     };
-    const refreshToken = await generateRefreshToken(username);
-    const accessToken = await generateAccessToken(username.toString())//jwt.sign(username, process.env.REFRESH_TOKEN_SECRET);
+
+    const accessToken = await generateAccessToken(username.toString());
     const tokens = {
-        accessToken,
-        refreshToken
-    }
+        accessToken
+    };
     return SR.data(await tokens);
 };
 
