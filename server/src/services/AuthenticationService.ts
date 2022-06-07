@@ -4,6 +4,7 @@ import * as bcrypt from "bcrypt";
 import fs from "fs/promises";
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import * as jwt from 'jsonwebtoken';
+import { json } from 'body-parser';
 
 
 const usersDir = "./data/users";
@@ -13,6 +14,28 @@ if (!existsSync(usersFile)) writeFileSync(usersFile, "{}");
 
 interface IUserTable {
     [key: string]: string;
+}
+
+const generateRefreshToken = async (username: string) => {
+    const usersTable = await getUserTable();
+    const user = usersTable[username];
+
+    return jwt.sign({ user },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: '1y' }
+    );
+
+}
+
+const generateAccessToken = async (username: string) => {
+    const usersTable = await getUserTable();
+    const user = usersTable[username];
+
+    return jwt.sign({ user },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: '1d' }
+    );
+
 }
 
 const getUserTable = async (): Promise<IUserTable> => {
@@ -44,7 +67,7 @@ export const UserExists = async (username: string): Promise<IServiceResponse<boo
     return SR.data(user !== null && user !== undefined);
 };
 
-export const verifyToken = async (token: string):  Promise<any> => {
+export const verifyAccessToken = async (token: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
             if (err) return reject(err);
@@ -73,17 +96,24 @@ export const RegisterUser = async (username: string, password: string, confPassw
 };
 
 
-export const LoginUser = async (username: string, password: string, ): Promise<IServiceResponse<string | void>> => {
+export const LoginUser = async (username: string, password: string,): Promise<IServiceResponse<any | void>> => {
     const users = await getUserTable();
     const hashedPassword = users[username];
+    //const accessToken = generateAccessToken(username);
+    //const refreshToken = jwt.sign(username, process.env.REFRESH_TOKEN_SECRET);
+
     if (!hashedPassword) return SR.error(403, "Username or Password was incorrect");
 
     if (!await bcrypt.compare(password, hashedPassword)) {
         return SR.error(403, "Username or Password was incorrect");
     };
-    //const accessToken = jwtAuth(username).toString();
-    const accessToken = jwt.sign(username, process.env.ACCESS_TOKEN_SECRET);
-    return SR.data(accessToken);
+    const refreshToken = await generateRefreshToken(username);
+    const accessToken = await generateAccessToken(username.toString())//jwt.sign(username, process.env.REFRESH_TOKEN_SECRET);
+    const tokens = {
+        accessToken,
+        refreshToken
+    }
+    return SR.data(await tokens);
 };
 
 export const DeleteUser = async (username: string): Promise<IServiceResponse<boolean | void>> => {
