@@ -29,9 +29,9 @@ export const Execute = async (): Promise<IServiceResponse<boolean | void>> => {
         return SR.error(500, "Server failed to stop previously running process");
     }
 
-    const childProcess = spawn("python3.10", [uploadMainFile], { cwd: cwd(), env: process.env, stdio: ["ignore", "inherit", "ignore"] });
+    const childProcess = spawn("python3.10", [uploadMainFile], { cwd: cwd(), env: process.env, stdio: ["ignore", "pipe", "ignore"] });
 
-    childProcess.on("data", (buffer: Buffer) => {
+    childProcess.stdout.on("data", (buffer: Buffer) => {
         const outputStr = buffer.toString();
         ConsoleOutputLog.push(outputStr);
         ConsoleOutput.emit("data", outputStr);

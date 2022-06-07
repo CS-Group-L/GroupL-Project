@@ -2,30 +2,24 @@ import { Router, Request, Response } from "express";
 import { UploadedFile } from 'express-fileupload';
 import { open as openFile } from 'fs/promises';
 import { Execute, PushToCluster, ConsoleOutput, ConsoleOutputLog, GetRunningStatus } from '../services/ClusterService';
+import { ClusterPushCodeValidator, ClusterPushValidator } from '../validators/ClusterValidators';
 import { Send } from '../utils/Respond';
 import { Socket, Server as wsServer } from "socket.io";
 import { corsOptions, server } from '../..';
-import path from 'path';
-
 export default () => {
 
     const ClusterController = Router();
     const ClusterIO = new wsServer(server, { cors: corsOptions, path: "/cluster/output" });
 
-    ClusterController.post("/push", async (req: Request, res: Response) => {
-        if (!req?.files?.file) return res.status(403).end("No file uploaded");
-
+    ClusterController.post("/push", ClusterPushValidator, async (req: Request, res: Response) => {
         const file = req.files.file as UploadedFile;
-        if (path.extname(file.name) !== ".py") return res.status(403).end("The uploaded file must be a Python file");
-
         const pushResponse = await PushToCluster(file.tempFilePath);
         if (pushResponse.isError) return Send(res, pushResponse);
 
         return Send(res, await Execute());
     });
 
-    ClusterController.post("/pushcode", async (req: Request, res: Response) => {
-        if (!req.body.code) return res.status(403).end("Body is required to have a key of code with contents that are not null");
+    ClusterController.post("/pushcode", ClusterPushCodeValidator, async (req: Request, res: Response) => {
         const tempFilePath = `./${Math.floor(Math.random() * 100000000)}.py`;
 
         try {
