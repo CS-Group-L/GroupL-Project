@@ -8,6 +8,7 @@ import { IServiceResponse, SR } from '../models/ResponseModel';
 const uploadsDir = "./data/uploads";
 const uploadMainFile = `${uploadsDir}/main.py`;
 
+if (!existsSync("./data")) mkdirSync("./data");
 if (!existsSync(uploadsDir)) mkdirSync(uploadsDir);
 
 export const PushToCluster = async (filePath: PathLike): Promise<IServiceResponse<boolean | void>> => {
