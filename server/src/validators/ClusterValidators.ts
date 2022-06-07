@@ -1,4 +1,4 @@
-import { body, check } from 'express-validator';
+import { body } from 'express-validator';
 import { hasFile, isFiletype } from '../utils/FileValidation';
 import HandleValidation from '../utils/HandleValidation';
 
@@ -9,6 +9,7 @@ export const ClusterPushValidator = HandleValidation([
 ]);
 export const ClusterPushCodeValidator = HandleValidation([
     body("code")
+        .exists().withMessage("Code must not be empty")
         .notEmpty().withMessage("Code must not be empty")
         .isString().withMessage("Code must be a string")
         .isLength({ min: 4 }).withMessage("Code must have a minimum length of 4")
