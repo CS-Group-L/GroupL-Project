@@ -9,7 +9,7 @@ const usernameSchema = body("username")
 const usernameCreateSchema = body("username")
     .exists().withMessage("Username must not be empty")
     .notEmpty().withMessage("Username must not be empty")
-    .isString().withMessage("Username must be a string")
+    // .isString().withMessage("Username must be a string")
     .isLength({ min: 4 }).withMessage("A username must at least have a length of 8 characters");
 
 const passwordSchema = body("password")

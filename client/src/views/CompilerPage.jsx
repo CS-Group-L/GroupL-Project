@@ -51,10 +51,17 @@ const CompilerPage = () => {
     }, [output]);
 
     useEffect(() => {
+        //Logs into the admin account
+        const placeholderjwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiJDJiJDEwJFNaajZtcENRWW5WbWMyZFpvdzlienVTY1VzbWprQjFSdk5TV0JGUDRGVm5HMlFRZ1FPaDFTIiwiaWF0IjoxNjU0NjA5Mjk3LCJleHAiOjE2NTQ2OTU2OTd9.jkDP3jewZpBj_DnxGapuPuh4pjmhDCdQEd5DEC2RPfY";
+
+        const queryParams = new URLSearchParams();
+        queryParams.append("token", placeholderjwt);
+
         const socket = io("ws://localhost:3000", {
             path: "/cluster/output",
             autoConnect: false,
-            transports: ["websocket"]
+            transports: ["websocket"],
+            query: queryParams.toString()
         });
 
         const onOutputRecieved = (log) => {
