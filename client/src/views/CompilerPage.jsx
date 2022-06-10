@@ -3,6 +3,7 @@ import axios from 'axios';
 import * as ReactBootStrap from 'react-bootstrap';
 import { io } from "socket.io-client";
 import { useCallback, useEffect, useRef, useState } from 'react';
+import useAuth from '../hooks/useAuth';
 
 const CompilerPage = () => {
     const fileUploadBoxRef = useRef();
@@ -14,6 +15,8 @@ const CompilerPage = () => {
     const [loading, setLoading] = useState(false);
     const loadingRef = useRef(loading);
     loadingRef.current = loading;
+
+    const [, checkAuth] = useAuth();
 
     const getFileToUpload = useCallback(() => {
         const input = fileUploadBoxRef.current;
@@ -51,6 +54,7 @@ const CompilerPage = () => {
     }, [output]);
 
     useEffect(() => {
+        if (!checkAuth()) return () => null;
         //Logs into the admin account
         const placeholderjwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiJDJiJDEwJFNaajZtcENRWW5WbWMyZFpvdzlienVTY1VzbWprQjFSdk5TV0JGUDRGVm5HMlFRZ1FPaDFTIiwiaWF0IjoxNjU0NjA5Mjk3LCJleHAiOjE2NTQ2OTU2OTd9.jkDP3jewZpBj_DnxGapuPuh4pjmhDCdQEd5DEC2RPfY";
 

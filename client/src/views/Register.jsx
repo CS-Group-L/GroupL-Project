@@ -1,7 +1,9 @@
 import './Register.scss'
-import { useState } from 'react';
-import { createBrowserHistory } from "history";
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
+import axios from "axios";
+// import Swal from 'sweetalert2'
 
 const Register = () => {
     const [username, setUsername] = useState("");
@@ -10,50 +12,79 @@ const Register = () => {
 
     const [errorMessage, setErrorMessage] = useState("");
 
-    const history = createBrowserHistory();
+    const [authState, checkAuth] = useAuth();
 
-    const checkFields = () => {
-        if (password === confirmPassword && password.length >= 6) {
-            setStateButton({
-                disabled: false
+    
+    // const Swal = require('sweetalert2')
+    useEffect(() => {
+        checkAuth()
+    }, [])
+
+    
+    const register = (username, password, confPassword) => {
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", password);
+        formData.append("confPassword", confPassword)
+        axios
+            .post("http://localhost:3000/users/register", formData, {
+                headers: {
+                    'Content-Typer': 'multipart/form-data',
+                    'Authorization': 'Bearer ' + authState.jwt
+                }
             })
-            return;
-        }
-        else {
-            setStateButton({
-                disabled: true
-            })
-        }
+            .then((res) => {
+                if (res.data.error) {
+                  console.log(res.data.error);
+                } else {
+                    //Swal.fire('A new user has been added.')
+                    alert("A new user has been added.")
+                }
+              })
+    };
 
-        if (password.length < 6 || !username) {
+    // const checkFields = () => {
+    //     if (password === confirmPassword && password.length >= 6) {
+    //         setStateButton({
+    //             disabled: false
+    //         })
+    //         return;
+    //     }
+    //     else {
+    //         setStateButton({
+    //             disabled: true
+    //         })
+    //     }
 
-            setStateButton({
-                disabled: true
-            })
+    //     if (password.length < 6 || !username) {
 
-            return;
-        }
-        if (password.length - 1 === confirmPassword.length) {
+    //         setStateButton({
+    //             disabled: true
+    //         })
 
-            setStateButton({
-                disabled: false
-            })
-            return;
-        }
-    }
+    //         return;
+    //     }
+    //     if (password.length - 1 === confirmPassword.length) {
+
+    //         setStateButton({
+    //             disabled: false
+    //         })
+    //         return;
+    //     }
+    // }
 
     const handleUsernameChange = (e) => {
         e.preventDefault();
 
         setUsername(e.target.value);
-        checkFields();
+        //checkFields();
     };
 
     const handlePasswordChange = (e) => {
         e.preventDefault();
 
         setPassword(e.target.value);
-        checkFields();
+       // checkFields();
 
     };
 
@@ -61,7 +92,7 @@ const Register = () => {
         e.preventDefault();
 
         setConfirmPassword(e.target.value);
-        checkFields();
+       // checkFields();
 
     };
 
@@ -78,13 +109,10 @@ const Register = () => {
                 return;
             }
             setErrorMessage("");
-            register(username, password,);
+            register(username, password, confirmPassword);
         } else {
             setErrorMessage("Passwords do not match.");
         }
-
-        history.push("/login");
-        window.location.reload();
     };
 
 
