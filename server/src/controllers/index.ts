@@ -7,7 +7,7 @@ import ClusterController from './ClusterController';
 export default () => {
     const ControllerRoutes = Router();
 
-    ControllerRoutes.use("/Cluster", ClusterController());
+    ControllerRoutes.use("/Cluster", ClusterController);
     ControllerRoutes.use("/Users", AuthenticationController);
 
     return ControllerRoutes;
