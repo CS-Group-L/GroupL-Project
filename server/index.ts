@@ -5,7 +5,6 @@ import cors from "cors";
 import { config } from 'dotenv';
 import { createServer } from 'http';
 import controllerRoutes from './src/controllers';
-import { existsSync, mkdirSync } from 'fs';
 
 config();
 
