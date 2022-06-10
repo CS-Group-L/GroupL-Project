@@ -1,6 +1,7 @@
 import './Register.scss'
 import { useState } from 'react';
 import { createBrowserHistory } from "history";
+import { Link } from 'react-router-dom';
 
 const Register = () => {
     const [username, setUsername] = useState("");
@@ -102,6 +103,9 @@ const Register = () => {
                     <div class="textbox">
                         <input type="password" placeholder="Confirm Password" id="confirm-password" name="confirm-password" onChange={handleConfirmPasswordChange} /><br />
                     </div>
+                </div>
+                <div className='changeButton'>
+                    <Link to="/">Change your password</Link>
                 </div>
                 <input class="btn" type="submit" value="Confirm" id="btnSubmit" />
             </div>
