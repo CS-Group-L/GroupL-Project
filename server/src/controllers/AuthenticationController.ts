@@ -1,22 +1,26 @@
 import { Request, Response, Router, NextFunction } from "express";
-import { DeleteUser, GetAllUsers, verifyAccessToken, LoginUser, RegisterUser, UserExists } from '../services/AuthenticationService';
+import { AuthService } from '../services/AuthenticationService';
 import { deleteUserValidator, hasAccessValidator, loginValidator, registerValidator } from '../validators/AuthenticationValidators';
 import { Send } from '../utils/Respond';
 import authenticate from '../middleware/authenticate';
 
 const AuthenticationController = Router();
+const service = new AuthService({
+    storagePath: "./data/users",
+    accessTokenSecret: process.env.ACCESS_TOKEN_SECRET
+});
 
 AuthenticationController.get("/", authenticate, async (_, res: Response) => {
     return Send(
         res,
-        await GetAllUsers()
+        await service.GetAllUsers()
     );
 });
 
 AuthenticationController.post("/login", loginValidator, async (req: Request, res: Response) => {
     const username = req.body.username;
     const password = req.body.password;
-    const response = await LoginUser(
+    const response = await service.LoginUser(
         username,
         password
     );
@@ -25,7 +29,7 @@ AuthenticationController.post("/login", loginValidator, async (req: Request, res
 });
 
 AuthenticationController.post("/register", authenticate, registerValidator, async (req: Request, res: Response) => {
-    const response = await RegisterUser(
+    const response = await service.RegisterUser(
         req.body.username,
         req.body.password,
         req.body.confPassword
@@ -35,7 +39,7 @@ AuthenticationController.post("/register", authenticate, registerValidator, asyn
 });
 
 AuthenticationController.delete("/:username", authenticate, deleteUserValidator, async (req: Request, res: Response) => {
-    const response = await DeleteUser(
+    const response = await service.DeleteUser(
         req.params.username
     );
 
@@ -45,7 +49,7 @@ AuthenticationController.delete("/:username", authenticate, deleteUserValidator,
 AuthenticationController.get("/exists/:username", authenticate, hasAccessValidator, async (req: Request, res: Response) => {
     return Send(
         res,
-        await UserExists(req.params.username)
+        await service.UserExists(req.params.username)
     );
 });
 
