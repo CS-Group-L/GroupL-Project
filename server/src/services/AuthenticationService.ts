@@ -30,26 +30,6 @@ export class AuthService {
         if (!existsSync(this.storageFile)) writeFileSync(this.storageFile, '{"admin":"$2b$10$SZj6mpCQYnVmc2dZow9bzuScUsmjkB1RvNSWBFP4FVnG2QQgQOh1S"}');
     }
 
-    public changePassword = async (username: string, oldPass: string, newPass: string, confPass: string): Promise<IServiceResponse<boolean | void>> => {
-
-        const users = await this.getUserTable();
-        const salt = await bcrypt.genSalt();
-        const hashedPassword = users[username];
-
-        if (!await bcrypt.compare(oldPass, hashedPassword)) {
-            return SR.error(403, "Please enter the current password correctly");
-        }
-        else if (newPass !== confPass) {
-            return SR.error(403, "Confirm password does not match new password");
-        }
-        else {
-            const newHashedPass = await bcrypt.hash(newPass, salt);
-            users[username] = newHashedPass;
-            await this.saveUserTable(users);
-            return SR.data(true);
-        }
-    }
-
     private getUserTable = async (): Promise<IUserTable> => {
         const file = await fs.open(this.storageFile, "r");
         const usersJSON = (await file.readFile()).toString();
@@ -135,6 +115,26 @@ export class AuthService {
             accessToken
         };
         return SR.data(await tokens);
+    };
+
+    public ChangePassword = async (username: string, oldPass: string, newPass: string, confPass: string): Promise<IServiceResponse<boolean | void>> => {
+
+        const users = await this.getUserTable();
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = users[username];
+
+        if (!await bcrypt.compare(oldPass, hashedPassword)) {
+            return SR.error(403, "Please enter the current password correctly");
+        }
+        else if (newPass !== confPass) {
+            return SR.error(403, "Confirm password does not match new password");
+        }
+        else {
+            const newHashedPass = await bcrypt.hash(newPass, salt);
+            users[username] = newHashedPass;
+            await this.saveUserTable(users);
+            return SR.data(true);
+        }
     };
 
     public DeleteUser = async (username: string): Promise<IServiceResponse<boolean | void>> => {

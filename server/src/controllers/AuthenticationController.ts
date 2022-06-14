@@ -39,7 +39,7 @@ AuthenticationController.post("/register", authenticate, registerValidator, asyn
 });
 
 AuthenticationController.post("/changepass", authenticate, changePasswordValidator, async (req: Request, res: Response) => {
-    const response  = await service.changePassword(
+    const response = await service.ChangePassword(
         req.auth.username,
         req.body.oldPassword,
         req.body.newPassword,
@@ -47,7 +47,7 @@ AuthenticationController.post("/changepass", authenticate, changePasswordValidat
     );
 
     return Send(res, response);
-})
+});
 
 AuthenticationController.delete("/:username", authenticate, deleteUserValidator, async (req: Request, res: Response) => {
     const response = await service.DeleteUser(
