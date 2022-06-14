@@ -1,21 +1,57 @@
 import { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import './UserPage.scss';
 import useAuth from '../hooks/useAuth';
-
+import axios from 'axios';
 
 const UserPage = () => {
-    const [users, _] = useState([{ name: "admin" }]);
+    const [users, setUsers] = useState([]);
     
-    const [, checkAuth] = useAuth();
+    const [authState, checkAuth] = useAuth();
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         checkAuth();
+        getAllUsers();
     }, [])
+
+    const removeUser = (username) =>{ 
+        axios
+            .delete(`http://localhost:3000/users/${username}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + authState.jwt
+                }
+            })
+            .then((res) => {
+                if(res.data.error){
+                    console.log(res.data.error);
+                } else {
+                    alert(`${username} has been deleted.`);
+                    navigate("/");
+                }
+            })
+    }
+
+    const getAllUsers = () =>{
+        axios
+            .get("http://localhost:3000/users", {
+                headers: {
+                    'Authorization': 'Bearer ' + authState.jwt
+                }
+            })
+            .then((res) => {
+                if (res.data.error) {
+                    console.log(res.data.error);
+                  } else {
+                    setUsers(res.data);
+                  }
+            })
+    }
 
     return (
         <div className="page-container user-page-container">
-            <Link to="/register" className="btn btn-primary">Register a users</Link>
+            <Link to="/register" className="btn btn-primary">Add users</Link>
             <table>
                 <thead>
                     <tr>
@@ -24,18 +60,19 @@ const UserPage = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {users.map((user) => <ItemSlot {...user} />)}
+                    {users.map((user) => <ItemSlot {...user} removeUser={removeUser}/>)}
                 </tbody>
             </table>
         </div>
     );
 };
 
-const ItemSlot = ({ name }) => {
+const ItemSlot = ({ username, removeUser }) => {
     return (
         <tr>
-            <td>{name}</td>
-            <td><button className='buttonRemove'>Remove user</button></td>
+            <td>{username}</td>
+            {/* <td><Link to="/change-password"><button className='buttonRemove'>Change password</button></Link></td> */}
+            <td><button className='buttonRemove' onClick={() => removeUser(username)}>Remove user</button></td>
         </tr>
     );
 };
