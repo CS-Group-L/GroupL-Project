@@ -17,7 +17,7 @@ declare module "express" {
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
-    console.log(authHeader);
+    //console.log(authHeader);
     
     const token = authHeader && authHeader.split(' ')[1];
     if (!token) return res.sendStatus(401);

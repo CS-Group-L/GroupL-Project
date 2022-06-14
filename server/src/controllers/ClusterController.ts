@@ -19,7 +19,6 @@ ClusterIO.use(socketioJwt.authorize({
     secret: process.env.ACCESS_TOKEN_SECRET,
     handshake: true
 }));
-
 ClusterController.post("/push", authenticate, ClusterPushValidator, async (req: Request, res: Response) => {
     const file = req.files.file as UploadedFile;
     const pushResponse = await service.PushToCluster(file.tempFilePath);
