@@ -53,7 +53,7 @@ export class AuthService {
         );
     };
 
-    private verifyAccessToken = async (token: string): Promise<any> => {
+    public VerifyAccessToken = async (token: string): Promise<any> => {
         return new Promise((resolve, reject) => {
             jwt.verify(token, this.secret, (err, data) => {
                 if (err) return reject(err);
