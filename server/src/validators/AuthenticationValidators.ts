@@ -17,6 +17,16 @@ const passwordSchema = body("password")
     .notEmpty().withMessage("Password must not be empty")
     .isString().withMessage("Password must be a string");
 
+const oldPasswordSchema = body("oldPassword")
+    .exists().withMessage("Password must not be empty")
+    .notEmpty().withMessage("Password must not be empty")
+    .isString().withMessage("Password must be a string");
+
+const newPasswordSchema = body("newPassword")
+    .exists().withMessage("Password must not be empty")
+    .notEmpty().withMessage("Password must not be empty")
+    .isString().withMessage("Password must be a string")
+    .isStrongPassword().withMessage("Password must at least have a length of 8, 1 lowercase letter, 1 uppercase letter, 1 number and 1 symbol");
 
 const passwordRegisterSchema = body("password")
     .exists().withMessage("Password must not be empty")
@@ -34,6 +44,14 @@ const passwordConfChain = body("confPassword")
         (value, { req }) => value === req.body.password
     ).withMessage("Confirmation password does not match with password");
 
+const newPasswordConfChain = body("confPassword")
+    .exists().withMessage("Confirmation password must not be empty")
+    .notEmpty().withMessage("Confirmation password must not be empty")
+    .isString().withMessage("Confirmation password must be a string")
+    .custom(
+        (value, { req }) => value === req.body.newPassword
+    ).withMessage("Confirmation password does not match with password");
+
 export const loginValidator = HandleValidation([
     usernameSchema,
     passwordSchema
@@ -46,8 +64,9 @@ export const registerValidator = HandleValidation([
 ]);
 
 export const changePasswordValidator = HandleValidation([
-    passwordChangeSchema,
-    passwordConfChain
+    oldPasswordSchema,
+    newPasswordSchema,
+    newPasswordConfChain
 ]);
 
 export const deleteUserValidator = HandleValidation([
