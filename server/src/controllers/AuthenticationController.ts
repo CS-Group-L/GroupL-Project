@@ -1,6 +1,6 @@
 import { Request, Response, Router, NextFunction } from "express";
 import { AuthService } from '../services/AuthenticationService';
-import { deleteUserValidator, hasAccessValidator, loginValidator, registerValidator } from '../validators/AuthenticationValidators';
+import { deleteUserValidator, hasAccessValidator, loginValidator, registerValidator, changePasswordValidator } from '../validators/AuthenticationValidators';
 import { Send, sendData } from '../utils/Respond';
 import authenticate from '../middleware/authenticate';
 
@@ -38,12 +38,12 @@ AuthenticationController.post("/register", authenticate, registerValidator, asyn
     return Send(res, response);
 });
 
-AuthenticationController.post("/changepass", authenticate, async (req: Request, res: Response) => {
+AuthenticationController.post("/changepass", authenticate, changePasswordValidator, async (req: Request, res: Response) => {
     const response  = await service.changePassword(
-        req.body.username,
-        req.body.oldPass,
-        req.body.newPass,
-        req.body.confPass
+        req.auth.username,
+        req.body.oldPassword,
+        req.body.newPassword,
+        req.body.confPassword
     );
 
     return Send(res, response);
