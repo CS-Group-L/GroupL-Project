@@ -86,8 +86,6 @@ export class AuthService {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const user = users[username];
-        console.log(user);
-
         if (user) return SR.error(403, "User already exists");
 
         users[username] = hashedPassword;
@@ -126,15 +124,15 @@ export class AuthService {
         if (!await bcrypt.compare(oldPass, hashedPassword)) {
             return SR.error(403, "Please enter the current password correctly");
         }
-        else if (newPass !== confPass) {
+
+        if (newPass !== confPass) {
             return SR.error(403, "Confirm password does not match new password");
         }
-        else {
-            const newHashedPass = await bcrypt.hash(newPass, salt);
-            users[username] = newHashedPass;
-            await this.saveUserTable(users);
-            return SR.data(true);
-        }
+        
+        const newHashedPass = await bcrypt.hash(newPass, salt);
+        users[username] = newHashedPass;
+        await this.saveUserTable(users);
+        return SR.data(true);
     };
 
     public DeleteUser = async (username: string): Promise<IServiceResponse<boolean | void>> => {
