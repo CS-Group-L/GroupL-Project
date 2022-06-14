@@ -42,12 +42,9 @@ export class AuthService {
         await file.close();
     };
 
-    private generateAccessToken = async (username: string) => {
-        const user = (await this.getUserTable())[username];
-        if (!user) return null;
-
+    private generateAccessToken = async (userdata: any) => {
         return jwt.sign(
-            { username: username },
+            userdata,
             this.secret,
             { expiresIn: '1d' }
         );
@@ -107,7 +104,7 @@ export class AuthService {
             return SR.error(403, "Username or Password was incorrect");
         };
 
-        const accessToken = await this.generateAccessToken(username.toString());
+        const accessToken = await this.generateAccessToken({ username: username.toString() });
         if (!accessToken) return SR.error(403, "Username or Password was incorrect");
         const tokens = {
             accessToken
@@ -120,15 +117,14 @@ export class AuthService {
         const users = await this.getUserTable();
         const salt = await bcrypt.genSalt();
         const hashedPassword = users[username];
-
-        if (!await bcrypt.compare(oldPass, hashedPassword)) {
+        if (!hashedPassword)
+            return SR.error(403, "User does not exist");
+        if (!await bcrypt.compare(oldPass, hashedPassword))
             return SR.error(403, "Please enter the current password correctly");
-        }
-
-        if (newPass !== confPass) {
+        if (newPass !== confPass)
             return SR.error(403, "Confirm password does not match new password");
-        }
-        
+
+
         const newHashedPass = await bcrypt.hash(newPass, salt);
         users[username] = newHashedPass;
         await this.saveUserTable(users);
@@ -138,12 +134,14 @@ export class AuthService {
     public DeleteUser = async (username: string): Promise<IServiceResponse<boolean | void>> => {
         const users = await this.getUserTable();
 
-        if (Object.keys(users).length > 1) {
-            delete users[username];
-            await this.saveUserTable(users);
-            return SR.data(true);
-        }
+        if (Object.keys(users).length <= 1)
+            return SR.error(403, "Last user cannot be deleted");
 
-        return SR.error(403, "Last user cannot be deleted");
+        if (!users[username])
+            return SR.error(403, "User doesn't exist");
+
+        delete users[username];
+        await this.saveUserTable(users);
+        return SR.data(true);
     };
 }
