@@ -20,7 +20,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     const token = authHeader && authHeader.split(' ')[1];
     if (!token) return res.sendStatus(401);
     try {
-        const data = await service.verifyAccessToken(token);
+        const data = await service.VerifyAccessToken(token);
         req.auth = data;
         next();
     }
