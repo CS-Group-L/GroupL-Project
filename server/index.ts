@@ -4,9 +4,9 @@ import bodyParser from 'body-parser';
 import cors from "cors";
 import { config } from 'dotenv';
 import { createServer } from 'http';
+config();
 import controllerRoutes from './src/controllers';
 
-config();
 
 export const corsOptions = { origin: "*" };
 
