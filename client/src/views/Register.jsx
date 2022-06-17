@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import axios from "axios";
-// import Swal from 'sweetalert2'
 
 const Register = () => {
     const [username, setUsername] = useState("");
@@ -15,7 +14,6 @@ const Register = () => {
     const [authState, checkAuth] = useAuth();
 
     
-    // const Swal = require('sweetalert2')
     useEffect(() => {
         checkAuth()
     }, [])
@@ -37,41 +35,40 @@ const Register = () => {
                 if (res.data.error) {
                   console.log(res.data.error);
                 } else {
-                    //Swal.fire('A new user has been added.')
                     alert("A new user has been added.")
                 }
               })
     };
 
-    // const checkFields = () => {
-    //     if (password === confirmPassword && password.length >= 6) {
-    //         setStateButton({
-    //             disabled: false
-    //         })
-    //         return;
-    //     }
-    //     else {
-    //         setStateButton({
-    //             disabled: true
-    //         })
-    //     }
+    const checkFields = () => {
+        if (password === confirmPassword && password.length >= 6) {
+            setStateButton({
+                disabled: false
+            })
+            return;
+        }
+        else {
+            setStateButton({
+                disabled: true
+            })
+        }
 
-    //     if (password.length < 6 || !username) {
+        if (password.length < 6 || !username) {
 
-    //         setStateButton({
-    //             disabled: true
-    //         })
+            setStateButton({
+                disabled: true
+            })
 
-    //         return;
-    //     }
-    //     if (password.length - 1 === confirmPassword.length) {
+            return;
+        }
+        if (password.length - 1 === confirmPassword.length) {
 
-    //         setStateButton({
-    //             disabled: false
-    //         })
-    //         return;
-    //     }
-    // }
+            setStateButton({
+                disabled: false
+            })
+            return;
+        }
+    }
 
     const handleUsernameChange = (e) => {
         e.preventDefault();
@@ -131,9 +128,6 @@ const Register = () => {
                     <div class="textbox">
                         <input type="password" placeholder="Confirm Password" id="confirm-password" name="confirm-password" onChange={handleConfirmPasswordChange} /><br />
                     </div>
-                </div>
-                <div className='changeButton'>
-                    <Link to="/">Change your password</Link>
                 </div>
                 <input class="btn" type="submit" value="Confirm" id="btnSubmit" />
             </div>

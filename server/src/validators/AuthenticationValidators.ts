@@ -1,7 +1,12 @@
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 import HandleValidation from '../utils/HandleValidation';
 
 const usernameSchema = body("username")
+    .exists().withMessage("Username must not be empty")
+    .notEmpty().withMessage("Username must not be empty")
+    .isString().withMessage("Username must be a string");
+
+const deleteUsernameSchema = param("username")
     .exists().withMessage("Username must not be empty")
     .notEmpty().withMessage("Username must not be empty")
     .isString().withMessage("Username must be a string");
@@ -70,7 +75,7 @@ export const changePasswordValidator = HandleValidation([
 ]);
 
 export const deleteUserValidator = HandleValidation([
-    usernameSchema
+    deleteUsernameSchema
 ]);
 
 export const hasAccessValidator = HandleValidation([
