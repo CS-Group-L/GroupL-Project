@@ -29,7 +29,7 @@ const Login = () => {
         formData.append("username", username);
         formData.append("password", password);
         axios
-            .post("http://localhost:3000/users/login", formData, {
+            .post("https://localhost:3000/users/login", formData, {
                 headers: {
                     'Content-Typer': 'multipart/form-data'
                 }

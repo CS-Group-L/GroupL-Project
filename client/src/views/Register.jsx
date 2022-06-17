@@ -27,7 +27,7 @@ const Register = () => {
         formData.append("password", password);
         formData.append("confPassword", confPassword)
         axios
-            .post("http://localhost:3000/users/register", formData, {
+            .post("https://localhost:3000/users/register", formData, {
                 headers: {
                     'Content-Typer': 'multipart/form-data',
                     'Authorization': 'Bearer ' + authState.jwt

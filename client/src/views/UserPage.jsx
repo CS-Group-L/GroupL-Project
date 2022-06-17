@@ -6,12 +6,12 @@ import useAuth from '../hooks/useAuth';
 
 const UserPage = () => {
     const [users, _] = useState([{ name: "admin" }]);
-    
+
     const [, checkAuth] = useAuth();
 
     useEffect(() => {
         checkAuth();
-    }, [])
+    }, []);
 
     return (
         <div className="page-container user-page-container">

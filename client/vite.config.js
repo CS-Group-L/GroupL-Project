@@ -1,10 +1,17 @@
 import { defineConfig } from 'vite';
 import { config as configEnv } from "dotenv";
 import react from "@vitejs/plugin-react";
+import fs from "fs";
 
 configEnv();
 
 export default defineConfig({
-    server: { port: process.env.PORT ?? 3001 },
+    server: {
+        port: process.env.PORT ?? 3001,
+        https: {
+            cert: fs.readFileSync("../cert.pem"),
+            key: fs.readFileSync("../key.pem")
+        }
+    },
     plugins: [react()]
 });

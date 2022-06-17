@@ -40,7 +40,7 @@ const CompilerPage = () => {
 
         formData.append("file", fileToUpload);
 
-        axios.post("http://localhost:3000/cluster/push", formData, {
+        axios.post("https://localhost:3000/cluster/push", formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -61,7 +61,7 @@ const CompilerPage = () => {
         const queryParams = new URLSearchParams();
         queryParams.append("token", placeholderjwt);
 
-        const socket = io("ws://localhost:3000", {
+        const socket = io("wss://localhost:3000", {
             path: "/cluster/output",
             autoConnect: false,
             transports: ["websocket"],
