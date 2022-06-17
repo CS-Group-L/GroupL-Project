@@ -1,33 +1,63 @@
-import { existsSync, mkdirSync, PathLike } from 'fs';
+import { PathLike, mkdirSync } from 'fs';
 import { rename as moveFile } from "fs/promises";
-import { spawn } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 import { cwd } from 'process';
+import EventEmitter from 'events';
+import { IServiceResponse, SR } from '../models/ResponseModel';
 
-if (!existsSync("./data")) mkdirSync("./data");
+interface IClusterOptions {
+    storagePath: PathLike;
+}
 
-export const PushToCluster = async (filePath: PathLike): Promise<boolean> => {
-    await moveFile(filePath, "./data/main.py");
-    return true;
-};
+export class ClusterService {
+    private storagePath: PathLike;
+    private storageMainFile: PathLike;
+    private currentProcess: ChildProcess = null;
+    public ConsoleOutput = new EventEmitter();
+    public ConsoleOutputLog: Array<string> = [];
 
-let currentConsoleOutput: Array<string> = [];
-export const Execute = async () => {
-    currentConsoleOutput = [];
-    const childProcess = spawn("python3.10", ["./data/main.py"], { cwd: cwd() });
+    constructor(config: IClusterOptions) {
+        this.storagePath = config.storagePath;
+        this.storageMainFile = `${config.storagePath}/main.py`;
+        mkdirSync(this.storagePath, { recursive: true });
+    }
 
-    childProcess.stderr.on("data", (stream: Buffer) => {
-        console.log(stream.toString());
-    });
+    public PushToCluster = async (filePath: PathLike): Promise<IServiceResponse<boolean | void>> => {
+        try {
+            await moveFile(filePath, this.storageMainFile);
+            return SR.data(true);
+        } catch (error) {
+            return SR.error(500, "Internal Server Error");
+        }
+    };
 
-    childProcess.stdout.on("data", (stream: Buffer) => {
-        currentConsoleOutput.push(stream.toString());
-    });
-};
+    public Execute = async (): Promise<IServiceResponse<boolean | void>> => {
+        this.ConsoleOutputLog = [];
+        if (this.currentProcess && !this.currentProcess.kill()) {
+            return SR.error(500, "Server failed to stop previously running process");
+        }
 
-export const GetEstimatedRunTime = async (): Promise<Number> => {
-    return 0;
-};
+        const childProcess = spawn("python3.10", [this.storageMainFile.toString()], { cwd: cwd(), env: process.env, stdio: ["ignore", "pipe", "ignore"] });
 
-export const GetConsoleLog = async (): Promise<Array<string>> => {
-    return currentConsoleOutput;
-};
+        childProcess.stdout.on("data", (buffer: Buffer) => {
+            const outputStr = buffer.toString();
+            this.ConsoleOutputLog.push(outputStr);
+            this.ConsoleOutput.emit("data", outputStr);
+        });
+
+        childProcess.on(
+            "exit",
+            () => this.ConsoleOutput.emit("exit")
+        );
+
+        return SR.data(true);
+    };
+
+    public GetRunningStatus = async (): Promise<boolean> => {
+        return (this.currentProcess || { exitCode: 1 }).exitCode !== null;
+    };
+
+    public GetEstimatedRunTime = async (): Promise<Number> => {
+        return 0;
+    };
+}

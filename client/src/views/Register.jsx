@@ -1,6 +1,8 @@
 import './Register.scss'
-import { useState } from 'react';
-import { createBrowserHistory } from "history";
+import { useState, useEffect } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
+import axios from "axios";
 
 const Register = () => {
     const [username, setUsername] = useState("");
@@ -9,7 +11,34 @@ const Register = () => {
 
     const [errorMessage, setErrorMessage] = useState("");
 
-    const history = createBrowserHistory();
+    const [authState, checkAuth] = useAuth();
+
+    
+    useEffect(() => {
+        checkAuth()
+    }, [])
+
+    
+    const register = (username, password, confPassword) => {
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", password);
+        formData.append("confPassword", confPassword)
+        axios
+            .post("https://localhost:3000/users/register", formData, {
+                headers: {
+                    'Content-Typer': 'multipart/form-data',
+                    'Authorization': 'Bearer ' + authState.jwt
+                }
+            })
+            .then((res) => {
+                if (res.data.error) {
+                  console.log(res.data.error);
+                } else {
+                    alert("A new user has been added.")
+                }
+              })
+    };
 
     const checkFields = () => {
         if (password === confirmPassword && password.length >= 6) {
@@ -45,14 +74,14 @@ const Register = () => {
         e.preventDefault();
 
         setUsername(e.target.value);
-        checkFields();
+        //checkFields();
     };
 
     const handlePasswordChange = (e) => {
         e.preventDefault();
 
         setPassword(e.target.value);
-        checkFields();
+       // checkFields();
 
     };
 
@@ -60,7 +89,7 @@ const Register = () => {
         e.preventDefault();
 
         setConfirmPassword(e.target.value);
-        checkFields();
+       // checkFields();
 
     };
 
@@ -77,13 +106,10 @@ const Register = () => {
                 return;
             }
             setErrorMessage("");
-            register(username, password,);
+            register(username, password, confirmPassword);
         } else {
             setErrorMessage("Passwords do not match.");
         }
-
-        history.push("/login");
-        window.location.reload();
     };
 
 

@@ -1,46 +1,67 @@
-import { Request, Response, Router } from "express";
-import { DeleteUser, GetAllUsers, LoginUser, RegisterUser } from '../services/AuthenticationService';
+import { Request, Response, Router, NextFunction } from "express";
+import { AuthService } from '../services/AuthenticationService';
+import { deleteUserValidator, hasAccessValidator, loginValidator, registerValidator, changePasswordValidator } from '../validators/AuthenticationValidators';
+import { Send, sendData } from '../utils/Respond';
+import authenticate from '../middleware/authenticate';
+
 const AuthenticationController = Router();
-
-AuthenticationController.get("/", async (_, res: Response) => {
-    const users = await GetAllUsers();
-
-    return res.send(users);
+const service = new AuthService({
+    storagePath: "./data/users",
+    accessTokenSecret: process.env.ACCESS_TOKEN_SECRET
 });
 
-AuthenticationController.post("/login", async (req: Request, res: Response) => {
-    const loggedInUser = await LoginUser(
-        req.body.username,
-        req.body.password
+AuthenticationController.get("/", authenticate, async (_, res: Response) => {
+    return Send(
+        res,
+        await service.GetAllUsers()
     );
-    return res.send(loggedInUser);
 });
 
-AuthenticationController.post("/register", async (req: Request, res: Response) => {
-    const success = await RegisterUser(
-        req.body.username,
-        req.body.password
+AuthenticationController.post("/login", loginValidator, async (req: Request, res: Response) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    const response = await service.LoginUser(
+        username,
+        password
     );
 
-    if (success) {
-        return res.sendStatus(200);
-    }
-    return res.sendStatus(500);
+    return Send(res, response);
 });
 
-AuthenticationController.delete("/:username", async (req: Request, res: Response) => {
-    const success = await DeleteUser(
+AuthenticationController.post("/register", authenticate, registerValidator, async (req: Request, res: Response) => {
+    const response = await service.RegisterUser(
+        req.body.username,
+        req.body.password,
+        req.body.confPassword
+    );
+
+    return Send(res, response);
+});
+
+AuthenticationController.post("/changepass", authenticate, changePasswordValidator, async (req: Request, res: Response) => {
+    const response = await service.ChangePassword(
+        req.auth.username,
+        req.body.oldPassword,
+        req.body.newPassword,
+        req.body.confPassword
+    );
+
+    return Send(res, response);
+});
+
+AuthenticationController.delete("/:username", authenticate, deleteUserValidator, async (req: Request, res: Response) => {
+    const response = await service.DeleteUser(
         req.params.username
     );
 
-    if (success) {
-        return res.sendStatus(200);
-    }
-    return res.sendStatus(500);
+    return Send(res, response);
 });
 
-AuthenticationController.get("/:username/has-dashboard-access",  async (req: Request, res: Response) => {
-    req.query.id
+AuthenticationController.get("/exists/:username", authenticate, hasAccessValidator, async (req: Request, res: Response) => {
+    return Send(
+        res,
+        await service.UserExists(req.params.username)
+    );
 });
 
 export default AuthenticationController;

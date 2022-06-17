@@ -1,15 +1,19 @@
 nav {
-    display: flex;
-    border-bottom: 2px solid white;
-    height: 3em;
+    display: flex !important;
+    border-bottom: 2px solid white !important;
+    height: 3em !important;
 }
 
 nav a {
-    text-decoration: none;
-    color: #fff;
-    font-weight: bold;
-    padding: 1%;
+    text-decoration: none !important;
+    color: #fff !important;
+    font-weight: bold !important;
+    padding: 1% !important;
     &:hover {
-        border-bottom: 5px solid #fff;
+        border-bottom: 5px solid #fff !important;
+    }
+
+    &.active{
+        border-bottom: 5px solid #fff !important;
     }
 }

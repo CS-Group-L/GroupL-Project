@@ -8,6 +8,7 @@ const Navbar = () => {
             <NavLink to='/'>Upload</NavLink>
             <NavLink to='/users'>Users</NavLink>
             <NavLink to='/register'>Register</NavLink>
+            <NavLink to='/change-password'>Change password</NavLink>
         </nav>
     );
 };
