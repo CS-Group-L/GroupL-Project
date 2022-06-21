@@ -1,7 +1,7 @@
 {
   "name": "server",
   "scripts": {
-    "start": "nodemon ./index.ts",
+    "start": "ts-node ./index.ts",
     "test": "ts-mocha 'test/**/*.ts'",
     "build": "tsc -p ./"
   },
