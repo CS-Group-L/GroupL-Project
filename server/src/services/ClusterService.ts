@@ -43,6 +43,8 @@ export class ClusterService {
 
         childProcess.stdout.on("data", (buffer: Buffer) => {
             const outputStr = buffer.toString();
+            console.log(outputStr);
+
             this.ConsoleOutputLog.push(outputStr);
             this.ConsoleOutput.emit("data", outputStr);
         });
@@ -60,8 +62,6 @@ export class ClusterService {
         if (!this.currentProcess) {
             return false;
         }
-
-        console.log(this.currentProcess.exitCode);
 
         return this.currentProcess.exitCode === null;
     };
