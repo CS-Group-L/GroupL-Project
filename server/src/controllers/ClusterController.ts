@@ -14,11 +14,7 @@ const service = new ClusterService({
 });
 
 const ClusterController = Router();
-const ClusterIO = new wsServer(server, { cors: corsOptions, path: "/cluster/output" });
-ClusterIO.use(socketioJwt.authorize({
-    secret: process.env.ACCESS_TOKEN_SECRET,
-    handshake: true
-}));
+
 ClusterController.post("/push", authenticate, ClusterPushValidator, async (req: Request, res: Response) => {
     const file = req.files.file as UploadedFile;
     const pushResponse = await service.PushToCluster(file.tempFilePath);
@@ -44,22 +40,16 @@ ClusterController.post("/pushcode", authenticate, ClusterPushCodeValidator, asyn
     return Send(res, await service.Execute());
 });
 
-ClusterIO.on("connection", (socket: Socket) => {
-    const ConsoleOutput = service.ConsoleOutput;
+ClusterController.get("/isRunning", authenticate, async (req: Request, res: Response) => {
+    res.send(JSON.stringify({
+        isRunning: await service.GetRunningStatus()
+    }));
+});
 
-    const OnFinishHandler = () => socket.emit("exit");
-    const OutputReceptionHandler = (output: string) => socket.emit("output", output);
-
-    ConsoleOutput.on("data", OutputReceptionHandler);
-    ConsoleOutput.on("exit", OnFinishHandler);
-
-    socket.on("getrunningstatus", async (callback) => callback?.(await service.GetRunningStatus()));
-    socket.on("getall", async (callback) => callback?.(service.ConsoleOutputLog));
-
-    socket.on("disconnect", () => {
-        ConsoleOutput.off("exit", OnFinishHandler);
-        ConsoleOutput.off("data", OutputReceptionHandler);
-    });
+ClusterController.get("/output", authenticate, async (req: Request, res: Response) => {
+    res.send(JSON.stringify({
+        output: service.ConsoleOutputLog
+    }));
 });
 
 export default ClusterController;

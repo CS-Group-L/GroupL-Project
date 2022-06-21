@@ -50,6 +50,14 @@ AuthenticationController.post("/changepass", authenticate, changePasswordValidat
 });
 
 AuthenticationController.delete("/:username", authenticate, deleteUserValidator, async (req: Request, res: Response) => {
+    if (req.auth.username !== "admin" && req.params.username !== req.auth.username) {
+        return res.send("Cannot delete accounts without being an admin");
+    }
+
+    if (req.params.username === "admin") {
+        return res.send("Cannot delete admin");
+    }
+
     const response = await service.DeleteUser(
         req.params.username
     );

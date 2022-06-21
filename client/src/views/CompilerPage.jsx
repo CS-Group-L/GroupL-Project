@@ -1,22 +1,19 @@
 import './CompilerPage.scss';
 import axios from 'axios';
 import * as ReactBootStrap from 'react-bootstrap';
-import { io } from "socket.io-client";
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useAuth from '../hooks/useAuth';
+import { apiUrl } from "../config";
 
 const CompilerPage = () => {
     const fileUploadBoxRef = useRef();
     const errorBoxRef = useRef();
 
     const [output, setOutput] = useState([]);
-    const outputRef = useRef(output);
 
     const [loading, setLoading] = useState(false);
-    const loadingRef = useRef(loading);
-    loadingRef.current = loading;
-
-    const [, checkAuth] = useAuth();
+    const [isRunning, setIsRunning] = useState(false);
+    const [authState, checkAuth] = useAuth();
 
     const getFileToUpload = useCallback(() => {
         const input = fileUploadBoxRef.current;
@@ -40,57 +37,72 @@ const CompilerPage = () => {
 
         formData.append("file", fileToUpload);
 
-        axios.post("https://localhost:3000/cluster/push", formData, {
+        axios.post(`${apiUrl}/cluster/push`, formData, {
             headers: {
+                'Authorization': 'Bearer ' + authState.jwt,
                 'Content-Type': 'multipart/form-data'
             }
         }).then((res) => {
+            setIsRunning(true);
             setLoading(true);
         }).catch((err) => console.log(err));
     };
 
+    const requestOutput = useCallback(() => {
+        return axios
+            .get(`${apiUrl}/cluster/output`, {
+                headers: {
+                    'Authorization': 'Bearer ' + authState.jwt
+                }
+            })
+            .then((res) => {
+                if (res.data.error) {
+                    console.log(res.data.error);
+                }
+                return res.data.output;
+            });
+    }, [authState]);
+
+    const requestRunningState = useCallback(() => {
+        return axios
+            .get(`${apiUrl}/cluster/isRunning`, {
+                headers: {
+                    'Authorization': 'Bearer ' + authState.jwt
+                }
+            })
+            .then((res) => {
+                if (res.data?.error) {
+                    console.log(res.data.error);
+                }
+                return res.data.isRunning;
+            });
+    }, [authState]);
+
     useEffect(() => {
-        outputRef.current = output;
-    }, [output]);
+        requestRunningState()
+            .then((running) => {
+                if (running) setLoading(true);
+                setIsRunning(running);
+            });
+    }, []);
 
     useEffect(() => {
         if (!checkAuth()) return () => null;
         //Logs into the admin account
-        const placeholderjwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiJDJiJDEwJFNaajZtcENRWW5WbWMyZFpvdzlienVTY1VzbWprQjFSdk5TV0JGUDRGVm5HMlFRZ1FPaDFTIiwiaWF0IjoxNjU0NjA5Mjk3LCJleHAiOjE2NTQ2OTU2OTd9.jkDP3jewZpBj_DnxGapuPuh4pjmhDCdQEd5DEC2RPfY";
+        if (isRunning) {
+            const onOutputRecieved = (log) => {
+                setOutput(log);
+                if (log?.length > 0) setLoading(false);
+            };
 
-        const queryParams = new URLSearchParams();
-        queryParams.append("token", placeholderjwt);
+            const interval = setInterval(() => {
+                requestOutput()
+                    .then(onOutputRecieved);
+            }, 1000);
 
-        const socket = io("wss://localhost:3000", {
-            path: "/cluster/output",
-            autoConnect: false,
-            transports: ["websocket"],
-            query: queryParams.toString()
-        });
-
-        const onOutputRecieved = (log) => {
-            outputRef.current.push(log);
-            setOutput(outputRef.current);
-            if (loadingRef.current) setLoading(false);
-        };
-
-        socket.on("connect", () => {
-            socket.emit("getrunningstatus", (isRunning) => {
-                console.log(isRunning);
-                if (isRunning) {
-                    setLoading(true);
-                    outputRef.current = [];
-                    socket.emit("getall", onOutputRecieved);
-                }
-            });
-        });
-
-        socket.on("exit", () => setLoading(false));
-        socket.on("output", onOutputRecieved);
-
-        socket.connect();
-        return () => socket.close();
-    }, []);
+            return () => clearInterval(interval);
+        }
+    }, [isRunning]);
 
     return (
         <div className='container'>
@@ -108,8 +120,7 @@ const CompilerPage = () => {
                 <div className='output-container'>
                     <header>Output</header>
                     {!loading ?
-                        <div className="output-content"><pre>{output}</pre>
-                        </div> :
+                        <div className="output-content"><pre>{output}</pre></div> :
                         (<div className="output-spinner-container"><ReactBootStrap.Spinner animation="border" variant="primary" /></div>)
                     }
                 </div>

@@ -4,11 +4,17 @@ nav {
     height: 3em !important;
 }
 
-nav a {
+nav :where(a, button, div) {
     text-decoration: none !important;
     color: #fff !important;
     font-weight: bold !important;
     padding: 1% !important;
+
+    border-style: none;
+    background-color: transparent;
+}
+
+nav :where(a, button) {
     &:hover {
         border-bottom: 5px solid #fff !important;
     }
@@ -16,4 +22,8 @@ nav a {
     &.active{
         border-bottom: 5px solid #fff !important;
     }
+}
+
+nav #logout {
+    margin-left: auto;
 }

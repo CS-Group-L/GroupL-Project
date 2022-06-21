@@ -50,11 +50,18 @@ export class ClusterService {
             () => this.ConsoleOutput.emit("exit")
         );
 
+        this.currentProcess = childProcess;
         return SR.data(true);
     };
 
     public GetRunningStatus = async (): Promise<boolean> => {
-        return (this.currentProcess || { exitCode: 1 }).exitCode !== null;
+        if (!this.currentProcess) {
+            return false;
+        }
+
+        console.log(this.currentProcess.exitCode);
+
+        return this.currentProcess.exitCode === null;
     };
 
     public GetEstimatedRunTime = async (): Promise<Number> => {

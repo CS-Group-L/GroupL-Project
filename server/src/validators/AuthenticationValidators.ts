@@ -15,7 +15,7 @@ const usernameCreateSchema = body("username")
     .exists().withMessage("Username must not be empty")
     .notEmpty().withMessage("Username must not be empty")
     // .isString().withMessage("Username must be a string")
-    .isLength({ min: 4 }).withMessage("A username must at least have a length of 8 characters");
+    .isLength({ min: 2 }).withMessage("A username must at least have a length of 2 characters");
 
 const passwordSchema = body("password")
     .exists().withMessage("Password must not be empty")

@@ -1,8 +1,9 @@
-import './Register.scss'
+import './Register.scss';
 import { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import axios from "axios";
+import { apiUrl } from "../config";
 
 const Register = () => {
     const [username, setUsername] = useState("");
@@ -13,19 +14,19 @@ const Register = () => {
 
     const [authState, checkAuth] = useAuth();
 
-    
-    useEffect(() => {
-        checkAuth()
-    }, [])
 
-    
+    useEffect(() => {
+        checkAuth();
+    }, []);
+
+
     const register = (username, password, confPassword) => {
         const formData = new FormData();
         formData.append("username", username);
         formData.append("password", password);
-        formData.append("confPassword", confPassword)
+        formData.append("confPassword", confPassword);
         axios
-            .post("https://localhost:3000/users/register", formData, {
+            .post(`${apiUrl}/users/register`, formData, {
                 headers: {
                     'Content-Typer': 'multipart/form-data',
                     'Authorization': 'Bearer ' + authState.jwt
@@ -33,31 +34,31 @@ const Register = () => {
             })
             .then((res) => {
                 if (res.data.error) {
-                  console.log(res.data.error);
+                    console.log(res.data.error);
                 } else {
-                    alert("A new user has been added.")
+                    alert("A new user has been added.");
                 }
-              })
+            });
     };
 
     const checkFields = () => {
         if (password === confirmPassword && password.length >= 6) {
             setStateButton({
                 disabled: false
-            })
+            });
             return;
         }
         else {
             setStateButton({
                 disabled: true
-            })
+            });
         }
 
         if (password.length < 6 || !username) {
 
             setStateButton({
                 disabled: true
-            })
+            });
 
             return;
         }
@@ -65,10 +66,10 @@ const Register = () => {
 
             setStateButton({
                 disabled: false
-            })
+            });
             return;
         }
-    }
+    };
 
     const handleUsernameChange = (e) => {
         e.preventDefault();
@@ -81,7 +82,7 @@ const Register = () => {
         e.preventDefault();
 
         setPassword(e.target.value);
-       // checkFields();
+        // checkFields();
 
     };
 
@@ -89,7 +90,7 @@ const Register = () => {
         e.preventDefault();
 
         setConfirmPassword(e.target.value);
-       // checkFields();
+        // checkFields();
 
     };
 
@@ -115,26 +116,26 @@ const Register = () => {
 
     return (
         <form method="post" id="register-form" onSubmit={handleSubmit}>
-            <div class="register-container">
+            <div className="register-container">
                 <p>{errorMessage}</p>
                 <h1>Register</h1>
-                <div class="reg-container">
-                    <div class="textbox">
+                <div className="reg-container">
+                    <div className="textbox">
                         <input type="text" placeholder="Username" id="username" name="username" onChange={handleUsernameChange} /><br />
                     </div>
-                    <div class="textbox">
+                    <div className="textbox">
                         <input type="password" placeholder="Password" id="password" name="password" onChange={handlePasswordChange} /><br />
                     </div>
-                    <div class="textbox">
+                    <div className="textbox">
                         <input type="password" placeholder="Confirm Password" id="confirm-password" name="confirm-password" onChange={handleConfirmPasswordChange} /><br />
                     </div>
                 </div>
-                <input class="btn" type="submit" value="Confirm" id="btnSubmit" />
+                <input className="btn" type="submit" value="Confirm" id="btnSubmit" />
             </div>
         </form >
-    )
+    );
 
 
-}
+};
 
-export default Register
+export default Register;

@@ -1,9 +1,10 @@
-import './Login.scss'
-import { Link, useNavigate } from "react-router-dom"
+import './Login.scss';
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from 'axios';
 import useAuth from '../hooks/useAuth';
 import { useEffect } from 'react';
+import { apiUrl } from "../config";
 
 const Login = () => {
 
@@ -29,7 +30,7 @@ const Login = () => {
         formData.append("username", username);
         formData.append("password", password);
         axios
-            .post("https://localhost:3000/users/login", formData, {
+            .post(`${apiUrl}/users/login`, formData, {
                 headers: {
                     'Content-Typer': 'multipart/form-data'
                 }
@@ -42,7 +43,7 @@ const Login = () => {
                     const newAuth = {
                         jwt: res.data.accessToken,
                         username: username
-                    }
+                    };
                     sessionStorage.setItem('auth', JSON.stringify(newAuth));
                     setAuth(newAuth);
                 }
@@ -52,15 +53,15 @@ const Login = () => {
                     setLoginErrorMessage("Invalid credentials");
                     return;
                 }
-            })
+            });
 
     };
 
     useEffect(() => {
         if (checkAuth()) {
-            navigate("/")
+            navigate("/");
         }
-    }, [authState])
+    }, [authState]);
 
 
     const handleFormSubmit = (e) => {
@@ -92,9 +93,9 @@ const Login = () => {
             </form>
             {/* <button onClick={getPrincipal}>Login with google.</button> */}
         </div>
-    )
+    );
 
 
-}
+};
 
-export default Login
+export default Login;

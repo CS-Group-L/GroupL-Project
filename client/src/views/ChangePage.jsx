@@ -1,8 +1,9 @@
-import './Register.scss'
+import './Register.scss';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import axios from "axios";
+import { apiUrl } from "../config";
 
 const ChangePassword = () => {
     const [oldPassword, setOldPassword] = useState("");
@@ -16,10 +17,10 @@ const ChangePassword = () => {
     const [authState, checkAuth] = useAuth();
 
     const navigate = useNavigate();
-    
+
     useEffect(() => {
-        checkAuth()
-    }, [])
+        checkAuth();
+    }, []);
 
     const changePassword = (oldPassword, newPassword, confPassword) => {
         const formData = new FormData();
@@ -27,39 +28,39 @@ const ChangePassword = () => {
         formData.append("newPassword", newPassword);
         formData.append("confPassword", confPassword);
         axios
-            .post("http://localhost:3000/users/changepass", formData, {
+            .post(`${apiUrl}/users/changepass`, formData, {
                 headers: {
                     'Content-Typer': 'multipart/form-data',
                     'Authorization': 'Bearer ' + authState.jwt
                 }
             })
             .then((res) => {
-                if(res.data.error){
+                if (res.data.error) {
                     console.log(res.data);
                 } else {
-                    alert(`Your password has been updated!`)
+                    alert(`Your password has been updated!`);
                     navigate("/");
                 }
-            })
-    }
+            });
+    };
 
     const handleOldPasswordChange = (e) => {
         e.preventDefault();
 
         setOldPassword(e.target.value);
-    }
+    };
 
     const handlePasswordChange = (e) => {
         e.preventDefault();
 
         setNewPassword(e.target.value);
-    }
+    };
 
     const handleConfirmPasswordChange = (e) => {
         e.preventDefault();
 
         setConfirmPassword(e.target.value);
-    }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -83,24 +84,24 @@ const ChangePassword = () => {
 
     return (
         <form method="post" id="register-form" onSubmit={handleSubmit}>
-            <div class="register-container">
+            <div className="register-container">
                 <p>{errorMessage}</p>
                 <h1>Change password</h1>
-                <div class="reg-container">
-                    <div class="textbox">
-                        <input type="password" placeholder="Old password" id="old-pass" name="old-pass" onChange={handleOldPasswordChange}/><br />
+                <div className="reg-container">
+                    <div className="textbox">
+                        <input type="password" placeholder="Old password" id="old-pass" name="old-pass" onChange={handleOldPasswordChange} /><br />
                     </div>
-                    <div class="textbox">
+                    <div className="textbox">
                         <input type="password" placeholder="New password" id="password" name="password" onChange={handlePasswordChange} /><br />
                     </div>
-                    <div class="textbox">
+                    <div className="textbox">
                         <input type="password" placeholder="Confirm new password" id="confirm-password" name="confirm-password" onChange={handleConfirmPasswordChange} /><br />
                     </div>
                 </div>
-                <input class="btn" type="submit" value="Confirm" id="btnSubmit" />
+                <input className="btn" type="submit" value="Confirm" id="btnSubmit" />
             </div>
         </form >
-    )
-}
+    );
+};
 
-export default ChangePassword
+export default ChangePassword;

@@ -3,9 +3,12 @@
     "target": "ESNext",
     "module": "CommonJS",
     "rootDir": "./",
-    "outDir": "./dist",
+    "outDir": "../dist/server",
     "esModuleInterop": true,
     "strictNullChecks": false,
     "strict": true
-  }
+  },
+  "exclude": [
+    "test"
+  ]
 }

@@ -6,6 +6,11 @@ import fs from "fs";
 configEnv();
 
 export default defineConfig({
+    build: {
+        outDir: "../server/client",
+        assetsDir: "public/assets",
+        emptyOutDir: true
+    },
     server: {
         port: process.env.PORT ?? 3001,
         https: {

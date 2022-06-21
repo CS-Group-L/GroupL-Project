@@ -5,7 +5,9 @@
   "scripts": {
     "start": "concurrently --kill-others \"npm run start --prefix client\"  \"npm run start --prefix server\"",
     "install": "concurrently --kill-others \"npm i --prefix client\"  \"&& npm i --prefix server\"",
-    "build": "concurrently --kill-others \"npm run build --prefix client\"  \"npm run build --prefix server\""
+    "build:app": "npm run build --prefix client && npm run build --prefix server",
+    "build:certs": "cp ./cert.pem ./dist/cert.pem",
+    "build": "npm run build:app && npm run build:certs"
   },
   "repository": {
     "type": "git",
@@ -14,12 +16,5 @@
   "homepage": "https://github.com/CS-Group-L/GroupL-Project#readme",
   "devDependencies": {
     "concurrently": "^7.2.0"
-  },
-  "dependencies": {
-    "axios": "^0.27.2",
-    "bootstrap": "^5.1.3",
-    "react-bootstrap": "^2.4.0",
-    "react-router-dom": "^6.3.0",
-    "sweetalert2": "^11.4.17"
   }
 }
