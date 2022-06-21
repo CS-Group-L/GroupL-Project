@@ -39,7 +39,7 @@ export class ClusterService {
 
         const command = process.env.CLUSTER_RUN_COMMAND || "python3.10";
         const args = process.env.CLUSTER_RUN_ARGS || "";
-        const childProcess = spawn(command, [args, this.storageMainFile.toString()], { cwd: cwd(), env: process.env, stdio: ["ignore", "pipe", "ignore"] });
+        const childProcess = spawn(command, [args, this.storageMainFile.toString()], { cwd: cwd(), env: process.env, stdio: "pipe" });
 
         childProcess.stdout.on("data", (buffer: Buffer) => {
             const outputStr = buffer.toString();
@@ -47,6 +47,11 @@ export class ClusterService {
 
             this.ConsoleOutputLog.push(outputStr);
             this.ConsoleOutput.emit("data", outputStr);
+        });
+
+        childProcess.stderr.on("data", (buffer: Buffer) => {
+            console.log(buffer.toString());
+
         });
 
         childProcess.on(
