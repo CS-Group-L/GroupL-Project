@@ -1,6 +1,6 @@
 import { PathLike, mkdirSync } from 'fs';
 import { rename as moveFile } from "fs/promises";
-import { ChildProcess, spawn } from 'child_process';
+import { ChildProcess, exec, spawn } from 'child_process';
 import { cwd } from 'process';
 import EventEmitter from 'events';
 import { IServiceResponse, SR } from '../models/ResponseModel';
@@ -39,7 +39,7 @@ export class ClusterService {
 
         const command = process.env.CLUSTER_RUN_COMMAND || "python3.10";
         const args = process.env.CLUSTER_RUN_ARGS || "";
-        const childProcess = spawn(command, [args, this.storageMainFile.toString()], { cwd: cwd(), env: process.env, stdio: "pipe" });
+        const childProcess = exec(`${command} ${args} ${this.storageMainFile.toString()}`, { cwd: cwd(), env: process.env });
 
         childProcess.stdout.on("data", (buffer: Buffer) => {
             const outputStr = buffer.toString();
