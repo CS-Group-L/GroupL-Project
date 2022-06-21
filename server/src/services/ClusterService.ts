@@ -33,16 +33,10 @@ export class ClusterService {
 
     public Execute = async (): Promise<IServiceResponse<boolean | void>> => {
         this.ConsoleOutputLog = [];
-        console.log(this.currentProcess);
+        console.log(this.currentProcess.killed);
 
-        if (this.currentProcess) {
-            const killed = this.currentProcess.kill();
-            console.log(killed);
-
-            if (!killed) {
-
-                return SR.error(500, "Server failed to stop previously running process");
-            }
+        if (this.currentProcess && (!this.currentProcess.kill() || this.currentProcess.killed)) {
+            return SR.error(500, "Server failed to stop previously running process");
         }
 
         const command = process.env.CLUSTER_RUN_COMMAND || "python3.10";
@@ -63,7 +57,10 @@ export class ClusterService {
 
         childProcess.on(
             "exit",
-            () => this.ConsoleOutput.emit("exit")
+            () => {
+                this.currentProcess = null;
+                this.ConsoleOutput.emit("exit");
+            }
         );
 
         this.currentProcess = childProcess;
