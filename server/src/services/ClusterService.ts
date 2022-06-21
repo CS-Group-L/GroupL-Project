@@ -33,7 +33,7 @@ export class ClusterService {
 
     public Execute = async (): Promise<IServiceResponse<boolean | void>> => {
         this.ConsoleOutputLog = [];
-        console.log(this.currentProcess.killed);
+        console.log(this.currentProcess?.killed);
 
         if (this.currentProcess && (!this.currentProcess.kill() || this.currentProcess.killed)) {
             return SR.error(500, "Server failed to stop previously running process");
