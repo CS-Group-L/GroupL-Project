@@ -4,9 +4,6 @@ import { open as openFile } from 'fs/promises';
 import { ClusterService } from '../services/ClusterService';
 import { ClusterPushCodeValidator, ClusterPushValidator } from '../validators/ClusterValidators';
 import { Send } from '../utils/Respond';
-import { Socket, Server as wsServer } from "socket.io";
-import { corsOptions, server } from '../..';
-import socketioJwt from "socketio-jwt";
 import authenticate from '../middleware/authenticate';
 
 const service = new ClusterService({
