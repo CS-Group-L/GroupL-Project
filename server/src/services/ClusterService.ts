@@ -37,7 +37,9 @@ export class ClusterService {
             return SR.error(500, "Server failed to stop previously running process");
         }
 
-        const childProcess = spawn("python3.10", [this.storageMainFile.toString()], { cwd: cwd(), env: process.env, stdio: ["ignore", "pipe", "ignore"] });
+        const command = process.env.CLUSTER_RUN_COMMAND || "python3.10";
+        const args = process.env.CLUSTER_RUN_ARGS || "";
+        const childProcess = spawn(command, [args, this.storageMainFile.toString()], { cwd: cwd(), env: process.env, stdio: ["ignore", "pipe", "ignore"] });
 
         childProcess.stdout.on("data", (buffer: Buffer) => {
             const outputStr = buffer.toString();
