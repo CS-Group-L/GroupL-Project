@@ -37,6 +37,8 @@ export class ClusterService {
 
         if (this.currentProcess) {
             const killed = this.currentProcess.kill();
+            console.log(killed);
+
             if (!killed) {
 
                 return SR.error(500, "Server failed to stop previously running process");
