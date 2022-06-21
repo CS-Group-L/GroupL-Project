@@ -45,8 +45,6 @@ export class ClusterService {
 
         childProcess.stdout.on("data", (buffer: Buffer) => {
             const outputStr = buffer.toString();
-            console.log(outputStr);
-
             this.ConsoleOutputLog.push(outputStr);
             this.ConsoleOutput.emit("data", outputStr);
         });
